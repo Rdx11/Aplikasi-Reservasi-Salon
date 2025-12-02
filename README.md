@@ -1,10 +1,6 @@
 # 💇‍♀️ Rasta Salon - Sistem Reservasi Online
 
 <p align="center">
-  <img src="public/favicon.ico" alt="Rasta Salon Logo" width="80">
-</p>
-
-<p align="center">
   <strong>Aplikasi Reservasi Salon Modern dengan Laravel & React</strong>
 </p>
 
