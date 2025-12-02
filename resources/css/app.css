@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+    
+    --color-primary-50: #fdf4ff;
+    --color-primary-100: #fae8ff;
+    --color-primary-200: #f5d0fe;
+    --color-primary-300: #f0abfc;
+    --color-primary-400: #e879f9;
+    --color-primary-500: #d946ef;
+    --color-primary-600: #c026d3;
+    --color-primary-700: #a21caf;
+    --color-primary-800: #86198f;
+    --color-primary-900: #701a75;
+    
+    --color-gold-50: #fffbeb;
+    --color-gold-100: #fef3c7;
+    --color-gold-200: #fde68a;
+    --color-gold-300: #fcd34d;
+    --color-gold-400: #fbbf24;
+    --color-gold-500: #f59e0b;
+    --color-gold-600: #d97706;
+    --color-gold-700: #b45309;
+    --color-gold-800: #92400e;
+    --color-gold-900: #78350f;
+}
+
+.gradient-primary {
+    background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%);
+}
+
+.gradient-gold {
+    background: linear-gradient(135deg, var(--color-gold-400) 0%, var(--color-gold-600) 100%);
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-gold-500) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
