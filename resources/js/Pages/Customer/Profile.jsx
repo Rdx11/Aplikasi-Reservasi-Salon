@@ -1,9 +1,9 @@
 import { Head, useForm, usePage, router } from '@inertiajs/react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Phone, MapPin, Lock, Camera, Shield, Calendar, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import CustomerLayout from '@/Layouts/CustomerLayout';
-import { Button, Alert, Modal } from '@/Components/UI';
+import { Button, Alert, Modal, Toast } from '@/Components/UI';
 
 export default function CustomerProfile() {
     const { auth, flash } = usePage().props;
@@ -11,6 +11,16 @@ export default function CustomerProfile() {
     const fileInputRef = useRef(null);
     const [showDeletePhoto, setShowDeletePhoto] = useState(false);
     const [previewPhoto, setPreviewPhoto] = useState(null);
+    const [toasts, setToasts] = useState([]);
+
+    const addToast = (message, type = 'error') => {
+        const id = Date.now();
+        setToasts((prev) => [...prev, { id, message, type }]);
+    };
+
+    const removeToast = (id) => {
+        setToasts((prev) => prev.filter((t) => t.id !== id));
+    };
 
     const { data, setData, put, processing, errors } = useForm({
         name: user?.name || '',
@@ -40,6 +50,22 @@ export default function CustomerProfile() {
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            // Validate file size (max 2MB)
+            const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+            if (file.size > maxSize) {
+                addToast('Ukuran foto tidak boleh lebih dari 2MB', 'error');
+                e.target.value = ''; // Reset input
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!allowedTypes.includes(file.type)) {
+                addToast('Format foto harus JPG, JPEG, atau PNG', 'error');
+                e.target.value = '';
+                return;
+            }
+
             const reader = new FileReader();
             reader.onloadend = () => setPreviewPhoto(reader.result);
             reader.readAsDataURL(file);
@@ -49,8 +75,17 @@ export default function CustomerProfile() {
 
             router.post('/customer/profile/photo', formData, {
                 forceFormData: true,
-                onSuccess: () => setPreviewPhoto(null),
-                onError: () => setPreviewPhoto(null),
+                onSuccess: () => {
+                    setPreviewPhoto(null);
+                },
+                onError: (errors) => {
+                    setPreviewPhoto(null);
+                    if (errors.photo) {
+                        addToast(errors.photo, 'error');
+                    } else {
+                        addToast('Gagal mengupload foto', 'error');
+                    }
+                },
             });
         }
     };
@@ -316,6 +351,15 @@ export default function CustomerProfile() {
                     </Button>
                 </div>
             </Modal>
+
+            {/* Toast Container */}
+            <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
+                <AnimatePresence>
+                    {toasts.map((toast) => (
+                        <Toast key={toast.id} {...toast} onClose={() => removeToast(toast.id)} />
+                    ))}
+                </AnimatePresence>
+            </div>
         </CustomerLayout>
     );
 }

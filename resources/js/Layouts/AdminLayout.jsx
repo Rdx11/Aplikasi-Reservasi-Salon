@@ -264,6 +264,7 @@ function NotificationDropdown() {
 
 function UserDropdown({ user }) {
     const [open, setOpen] = useState(false);
+    const isOwner = user?.roles?.includes('Owner');
 
     return (
         <div className="relative">
@@ -301,9 +302,11 @@ function UserDropdown({ user }) {
                             <Link href="/admin/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
                                 Profile
                             </Link>
-                            <Link href="/admin/settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
-                                Settings
-                            </Link>
+                            {!isOwner && (
+                                <Link href="/admin/settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">
+                                    Settings
+                                </Link>
+                            )}
                             <hr className="my-2" />
                             <button
                                 onClick={() => router.post('/logout')}

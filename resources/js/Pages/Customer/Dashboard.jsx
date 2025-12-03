@@ -140,7 +140,7 @@ export default function CustomerDashboard({ stats = {}, recentBookings = [], upc
                                     <div className="text-center py-8">
                                         <Calendar className="w-12 h-12 mx-auto text-gray-300 mb-3" />
                                         <p className="text-gray-500">Tidak ada booking mendatang</p>
-                                        <Button href="/customer/bookings/create" variant="outline" size="sm" className="mt-4">
+                                        <Button href="/customer/bookings" variant="outline" size="sm" className="mt-4">
                                             Buat Booking
                                         </Button>
                                     </div>

@@ -1,15 +1,27 @@
 import { useState, useRef } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
+import { AnimatePresence } from 'framer-motion';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { ConfirmModal } from '@/Components/UI/Modal';
 import { Alert } from '@/Components/UI/Alert';
+import { Toast } from '@/Components/UI/Toast';
 import { User, Mail, Phone, MapPin, Camera, Trash2, Lock, Save } from 'lucide-react';
 
 export default function ProfileIndex({ user }) {
     const [photoPreview, setPhotoPreview] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [toasts, setToasts] = useState([]);
     const photoInput = useRef(null);
     const { flash } = usePage().props;
+
+    const addToast = (message, type = 'error') => {
+        const id = Date.now();
+        setToasts((prev) => [...prev, { id, message, type }]);
+    };
+
+    const removeToast = (id) => {
+        setToasts((prev) => prev.filter((t) => t.id !== id));
+    };
 
     const profileForm = useForm({
         name: user.name || '',
@@ -36,6 +48,22 @@ export default function ProfileIndex({ user }) {
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            // Validate file size (max 2MB)
+            const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+            if (file.size > maxSize) {
+                addToast('Ukuran foto tidak boleh lebih dari 2MB', 'error');
+                e.target.value = '';
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!allowedTypes.includes(file.type)) {
+                addToast('Format foto harus JPG, JPEG, atau PNG', 'error');
+                e.target.value = '';
+                return;
+            }
+
             photoForm.setData('photo', file);
             const reader = new FileReader();
             reader.onload = (e) => setPhotoPreview(e.target.result);
@@ -49,6 +77,13 @@ export default function ProfileIndex({ user }) {
                 onSuccess: () => {
                     setPhotoPreview(null);
                     photoForm.reset();
+                },
+                onError: (errors) => {
+                    if (errors.photo) {
+                        addToast(errors.photo, 'error');
+                    } else {
+                        addToast('Gagal mengupload foto', 'error');
+                    }
                 },
             });
         }
@@ -281,6 +316,15 @@ export default function ProfileIndex({ user }) {
                 cancelText="Batal"
                 variant="danger"
             />
+
+            {/* Toast Container */}
+            <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
+                <AnimatePresence>
+                    {toasts.map((toast) => (
+                        <Toast key={toast.id} {...toast} onClose={() => removeToast(toast.id)} />
+                    ))}
+                </AnimatePresence>
+            </div>
         </AdminLayout>
     );
 }
