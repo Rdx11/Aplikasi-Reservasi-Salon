@@ -73,13 +73,10 @@ function HeroSection({ auth }) {
                             <div className="absolute inset-0 gradient-primary rounded-3xl rotate-6 opacity-20" />
                             <div className="absolute inset-0 bg-gradient-to-br from-primary-400 to-primary-600 rounded-3xl overflow-hidden">
                                 <img
-                                    src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=600&fit=crop"
+                                    src="/storage/banner/banner-1.jpg"
                                     alt="Rasta Salon"
                                     className="w-full h-full object-cover mix-blend-overlay opacity-80"
                                 />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <Scissors className="w-32 h-32 text-white/30" />
-                                </div>
                             </div>
                         </div>
                     </motion.div>

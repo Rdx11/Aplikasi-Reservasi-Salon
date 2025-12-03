@@ -9,13 +9,13 @@ import clsx from 'clsx';
 import { useNotifications } from '@/Hooks/useNotifications';
 
 const menuItems = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Users', href: '/admin/users', icon: Users, permission: 'view users' },
-    { name: 'Categories', href: '/admin/categories', icon: FolderOpen, permission: 'view categories' },
-    { name: 'Services', href: '/admin/services', icon: Sparkles, permission: 'view services' },
-    { name: 'Bookings', href: '/admin/bookings', icon: Calendar, permission: 'view all bookings' },
-    { name: 'Promotions', href: '/admin/promotions', icon: Tag, permission: 'view promotions' },
-    { name: 'Reports', href: '/admin/reports', icon: FileText, permission: 'view reports' },
+    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard, roles: ['Admin', 'Owner'] },
+    { name: 'Users', href: '/admin/users', icon: Users, roles: ['Admin'] },
+    { name: 'Categories', href: '/admin/categories', icon: FolderOpen, roles: ['Admin'] },
+    { name: 'Services', href: '/admin/services', icon: Sparkles, roles: ['Admin'] },
+    { name: 'Bookings', href: '/admin/bookings', icon: Calendar, roles: ['Admin', 'Owner'] },
+    { name: 'Promotions', href: '/admin/promotions', icon: Tag, roles: ['Admin'] },
+    { name: 'Reports', href: '/admin/reports', icon: FileText, roles: ['Admin'] },
 ];
 
 export default function AdminLayout({ children, title }) {
@@ -49,9 +49,11 @@ export default function AdminLayout({ children, title }) {
                     <span className="text-xl font-bold text-gradient">Rasta Salon</span>
                 </div>
                 <nav className="p-4 space-y-1">
-                    {menuItems.map((item) => (
-                        <SidebarLink key={item.name} item={item} />
-                    ))}
+                    {menuItems
+                        .filter((item) => !item.roles || item.roles.some((role) => auth?.user?.roles?.includes(role)))
+                        .map((item) => (
+                            <SidebarLink key={item.name} item={item} />
+                        ))}
                 </nav>
                 <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
                     <button

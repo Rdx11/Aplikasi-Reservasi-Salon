@@ -2,7 +2,6 @@
 
 namespace App\Http\Responses;
 
-use Illuminate\Http\JsonResponse;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
@@ -11,15 +10,16 @@ class LoginResponse implements LoginResponseContract
     {
         $user = auth()->user();
 
-        // Redirect based on role
-        if ($user->hasRole('Admin')) {
+        // Admin and Owner go to admin dashboard
+        if ($user->hasRole(['Admin', 'Owner'])) {
             $home = '/admin/dashboard';
         } else {
+            // Customer goes to customer dashboard
             $home = '/customer/dashboard';
         }
 
         return $request->wantsJson()
-            ? new JsonResponse(['two_factor' => false], 200)
+            ? response()->json(['two_factor' => false])
             : redirect()->intended($home);
     }
 }

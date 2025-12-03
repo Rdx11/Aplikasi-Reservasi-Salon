@@ -76,6 +76,13 @@ class RolePermissionSeeder extends Seeder
             'cancel bookings',
         ]);
 
+        // Create Owner role - can only view dashboard and bookings (read-only)
+        $ownerRole = Role::create(['name' => 'Owner']);
+        $ownerRole->givePermissionTo([
+            'view all bookings',
+            'view reports',
+        ]);
+
         // Create default Admin user
         $admin = User::create([
             'name' => 'Administrator',
@@ -85,5 +92,15 @@ class RolePermissionSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
         $admin->assignRole('Admin');
+
+        // Create default Owner user
+        $owner = User::create([
+            'name' => 'Owner',
+            'email' => 'owner@rastasalon.com',
+            'password' => Hash::make('password'),
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ]);
+        $owner->assignRole('Owner');
     }
 }

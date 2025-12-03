@@ -34,6 +34,7 @@ Route::middleware(['auth', 'customer'])->prefix('customer')->name('customer.')->
     Route::post('/bookings', [App\Http\Controllers\Customer\BookingController::class, 'store'])->name('bookings.store');
     Route::get('/bookings/{booking}', [App\Http\Controllers\Customer\BookingController::class, 'show'])->name('bookings.show');
     Route::post('/bookings/{booking}/cancel', [App\Http\Controllers\Customer\BookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::post('/bookings/{booking}/upload-payment', [App\Http\Controllers\Customer\BookingController::class, 'uploadPayment'])->name('bookings.upload-payment');
 
     // Profile
     Route::get('/profile', [App\Http\Controllers\Customer\ProfileController::class, 'index'])->name('profile.index');
@@ -43,10 +44,21 @@ Route::middleware(['auth', 'customer'])->prefix('customer')->name('customer.')->
     Route::put('/password', [App\Http\Controllers\Customer\ProfileController::class, 'updatePassword'])->name('password.update');
 });
 
-// Admin Routes
-Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->group(function () {
+// Admin & Owner Shared Routes (View Only)
+Route::middleware(['auth', 'role:Admin|Owner'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
 
+    // Profile
+    Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/photo', [App\Http\Controllers\Admin\ProfileController::class, 'updatePhoto'])->name('profile.photo');
+    Route::delete('/profile/photo', [App\Http\Controllers\Admin\ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
+    Route::put('/profile/password', [App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('profile.password');
+});
+
+// Admin Only Routes (Full Access)
+Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->group(function () {
     // Categories
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
@@ -59,8 +71,7 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/services/{service}', [ServiceController::class, 'update'])->name('services.update');
     Route::delete('/services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
 
-    // Bookings
-    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    // Booking Actions (Admin Only)
     Route::post('/bookings/{booking}/confirm', [BookingController::class, 'confirm'])->name('bookings.confirm');
     Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::post('/bookings/{booking}/complete', [BookingController::class, 'complete'])->name('bookings.complete');
@@ -84,13 +95,6 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->grou
     // Notifications API
     Route::get('/notifications/new-bookings', [App\Http\Controllers\Admin\NotificationController::class, 'getNewBookings'])->name('notifications.new-bookings');
     Route::post('/notifications/mark-read', [App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
-
-    // Profile
-    Route::get('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('profile.index');
-    Route::put('/profile', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/photo', [App\Http\Controllers\Admin\ProfileController::class, 'updatePhoto'])->name('profile.photo');
-    Route::delete('/profile/photo', [App\Http\Controllers\Admin\ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
-    Route::put('/profile/password', [App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('profile.password');
 
     // Settings
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');

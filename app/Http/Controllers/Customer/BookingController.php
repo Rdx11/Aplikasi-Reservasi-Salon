@@ -98,4 +98,33 @@ class BookingController extends Controller
 
         return redirect()->back()->with('success', 'Booking berhasil dibatalkan');
     }
+
+    public function uploadPayment(Request $request, Booking $booking)
+    {
+        if ($booking->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($booking->status !== 'confirmed') {
+            return redirect()->back()->with('error', 'Bukti pembayaran hanya dapat diupload untuk booking yang sudah dikonfirmasi');
+        }
+
+        $request->validate([
+            'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        // Delete old payment proof if exists
+        if ($booking->payment_proof) {
+            \Storage::disk('public')->delete($booking->payment_proof);
+        }
+
+        $path = $request->file('payment_proof')->store('payment-proofs', 'public');
+
+        $booking->update([
+            'payment_proof' => $path,
+            'payment_uploaded_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Bukti pembayaran berhasil diupload');
+    }
 }

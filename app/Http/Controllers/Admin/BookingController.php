@@ -11,10 +11,32 @@ use Inertia\Inertia;
 
 class BookingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $query = Booking::with(['user', 'service.category']);
+
+        // Search by booking code, customer name, or service name
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('booking_code', 'like', "%{$search}%")
+                  ->orWhereHas('user', function ($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('service', function ($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
         return Inertia::render('Admin/Bookings/Index', [
-            'bookings' => Booking::with(['user', 'service.category'])->latest()->get(),
+            'bookings' => $query->latest()->paginate(10)->withQueryString(),
+            'filters' => $request->only(['search', 'status']),
         ]);
     }
 

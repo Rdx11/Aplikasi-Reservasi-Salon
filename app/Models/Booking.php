@@ -20,11 +20,14 @@ class Booking extends Model
         'status',
         'notes',
         'total_price',
+        'payment_proof',
+        'payment_uploaded_at',
     ];
 
     protected $casts = [
         'booking_date' => 'date',
         'total_price' => 'decimal:2',
+        'payment_uploaded_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
