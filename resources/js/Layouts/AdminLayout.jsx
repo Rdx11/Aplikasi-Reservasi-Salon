@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Scissors, LayoutDashboard, Users, FolderOpen, Sparkles, Calendar,
-    Tag, FileText, Settings, LogOut, Menu, X, ChevronDown, Bell, Volume2, VolumeX
+    Tag, FileText, Menu, ChevronDown, Bell, Volume2, VolumeX, ChevronsLeft, ChevronsRight
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useNotifications } from '@/Hooks/useNotifications';
@@ -20,6 +20,7 @@ const menuItems = [
 
 export default function AdminLayout({ children, title }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const { auth } = usePage().props;
 
     return (
@@ -39,35 +40,50 @@ export default function AdminLayout({ children, title }) {
 
             {/* Sidebar */}
             <aside className={clsx(
-                'fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200 transition-transform lg:translate-x-0',
-                sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                'fixed top-0 left-0 z-50 h-full bg-white border-r border-gray-200 transition-all duration-300 lg:translate-x-0',
+                sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+                sidebarCollapsed ? 'w-20' : 'w-64'
             )}>
-                <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-100">
-                    <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+                <div className={clsx(
+                    'flex items-center border-b border-gray-100 transition-all duration-300',
+                    sidebarCollapsed ? 'justify-center px-2 py-5' : 'gap-3 px-6 py-5'
+                )}>
+                    <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">
                         <Scissors className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-xl font-bold text-gradient">Rasta Salon</span>
+                    {!sidebarCollapsed && <span className="text-xl font-bold text-gradient">Rasta Salon</span>}
                 </div>
-                <nav className="p-4 space-y-1">
+                <nav className={clsx('p-4 space-y-1', sidebarCollapsed && 'px-2')}>
                     {menuItems
                         .filter((item) => !item.roles || item.roles.some((role) => auth?.user?.roles?.includes(role)))
                         .map((item) => (
-                            <SidebarLink key={item.name} item={item} />
+                            <SidebarLink key={item.name} item={item} collapsed={sidebarCollapsed} />
                         ))}
                 </nav>
-                <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
+                {/* Collapse Button */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 hidden lg:block">
                     <button
-                        onClick={() => router.post('/logout')}
-                        className="flex items-center gap-3 w-full px-4 py-3 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition"
+                        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                        className={clsx(
+                            'flex items-center gap-3 w-full px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition',
+                            sidebarCollapsed && 'justify-center px-2'
+                        )}
+                        title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                     >
-                        <LogOut className="w-5 h-5" />
-                        <span className="font-medium">Logout</span>
+                        {sidebarCollapsed ? (
+                            <ChevronsRight className="w-5 h-5" />
+                        ) : (
+                            <>
+                                <ChevronsLeft className="w-5 h-5" />
+                                <span className="font-medium">Collapse</span>
+                            </>
+                        )}
                     </button>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <div className="lg:pl-64">
+            <div className={clsx('transition-all duration-300', sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64')}>
                 {/* Top Header */}
                 <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
                     <div className="flex items-center justify-between px-4 lg:px-8 py-4">
@@ -96,7 +112,7 @@ export default function AdminLayout({ children, title }) {
     );
 }
 
-function SidebarLink({ item }) {
+function SidebarLink({ item, collapsed }) {
     const { url } = usePage();
     const isActive = url.startsWith(item.href);
 
@@ -107,11 +123,13 @@ function SidebarLink({ item }) {
                 'flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition',
                 isActive
                     ? 'bg-primary-50 text-primary-600'
-                    : 'text-gray-600 hover:bg-gray-50'
+                    : 'text-gray-600 hover:bg-gray-50',
+                collapsed && 'justify-center px-2'
             )}
+            title={collapsed ? item.name : undefined}
         >
-            <item.icon className="w-5 h-5" />
-            <span>{item.name}</span>
+            <item.icon className="w-5 h-5 flex-shrink-0" />
+            {!collapsed && <span>{item.name}</span>}
         </Link>
     );
 }
