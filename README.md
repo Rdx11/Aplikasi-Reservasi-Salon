@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
   <img src="https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React">
   <img src="https://img.shields.io/badge/Inertia.js-1.x-9553E9?style=for-the-badge&logo=inertia&logoColor=white" alt="Inertia.js">
-  <img src="https://img.shields.io/badge/TailwindCSS-3.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="TailwindCSS">
+  <img src="https://img.shields.io/badge/TailwindCSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="TailwindCSS">
 </p>
 
 ---
@@ -22,20 +22,29 @@
 ### 👤 Fitur Customer
 - 🔐 Registrasi & Login dengan autentikasi aman
 - 📅 Booking layanan salon online
-- 📋 Melihat riwayat booking
-- 👤 Manajemen profil pengguna
+- 🏷️ Otomatis mendapat diskon jika ada promo hari ini
+- 📋 Melihat riwayat booking dengan filter & pencarian
+- 💳 Upload bukti pembayaran
+- 👤 Manajemen profil pengguna dengan foto
 - 🔔 Notifikasi status booking
 
 ### 👨‍💼 Fitur Admin
 - 📊 Dashboard dengan statistik & grafik interaktif
 - 👥 Manajemen pengguna (CRUD)
 - 📁 Manajemen kategori layanan
-- 💅 Manajemen layanan salon
+- 💅 Manajemen layanan salon dengan gambar
 - 📆 Manajemen booking (konfirmasi, proses, selesai, batal)
-- 🏷️ Manajemen promosi & diskon
+- 🏷️ Manajemen promosi harian (diskon persentase)
+- 💳 Verifikasi bukti pembayaran
 - 📈 Laporan & export (PDF, Excel/CSV)
-- 🔔 Notifikasi real-time booking baru
+- 🔔 Notifikasi real-time booking baru dengan suara
 - ⚙️ Pengaturan aplikasi
+
+### 👑 Fitur Owner
+- 📊 Akses dashboard dengan statistik lengkap
+- 📆 Melihat semua booking
+- 📈 Akses seluruh laporan (booking, revenue, customer)
+- 📤 Export laporan (PDF, Excel/CSV)
 
 ## 🛠️ Tech Stack
 
@@ -43,7 +52,7 @@
 |----------|-----------|
 | **Backend** | Laravel 11.x, PHP 8.2+ |
 | **Frontend** | React 18.x, Inertia.js |
-| **Styling** | TailwindCSS 3.x, Framer Motion |
+| **Styling** | TailwindCSS 4.x, Framer Motion |
 | **Database** | MySQL 8.0+ / MariaDB 10.4+ |
 | **Authentication** | Laravel Fortify |
 | **Authorization** | Spatie Laravel Permission |
@@ -164,6 +173,12 @@ php artisan serve
 
 Setelah menjalankan seeder, gunakan kredensial berikut untuk login:
 
+### Owner
+```
+Email: owner@rastasalon.com
+Password: password
+```
+
 ### Admin
 ```
 Email: admin@rastasalon.com
@@ -181,6 +196,8 @@ Password: password
 ```
 reservasi-salon-rasta/
 ├── app/
+│   ├── Console/
+│   │   └── Commands/           # Artisan commands (promo deactivation)
 │   ├── Http/
 │   │   ├── Controllers/
 │   │   │   ├── Admin/          # Controller untuk admin
@@ -205,8 +222,10 @@ reservasi-salon-rasta/
 │   ├── css/                    # Stylesheets
 │   └── views/                  # Blade templates
 ├── routes/
-│   └── web.php                 # Web routes
+│   ├── web.php                 # Web routes
+│   └── console.php             # Scheduled commands
 ├── public/                     # Public assets
+│   └── sounds/                 # Notification sounds
 ├── storage/                    # Storage files
 └── tests/                      # Test files
 ```
@@ -215,21 +234,20 @@ reservasi-salon-rasta/
 
 ### Mengubah Warna Tema
 
-Edit file `tailwind.config.js` untuk mengubah warna primary:
+Edit file `resources/css/app.css` untuk mengubah warna primary (bubble gum pink):
 
-```javascript
-theme: {
-  extend: {
-    colors: {
-      primary: {
-        50: '#faf5ff',
-        100: '#f3e8ff',
-        // ... sesuaikan warna
-        600: '#9333ea',
-        700: '#7e22ce',
-      }
-    }
-  }
+```css
+@theme {
+    --color-primary-50: #fef1f6;
+    --color-primary-100: #fee5ef;
+    --color-primary-200: #ffcce2;
+    --color-primary-300: #ffa3ca;
+    --color-primary-400: #ff6fa8;
+    --color-primary-500: #ff4d94;
+    --color-primary-600: #f72585;
+    --color-primary-700: #e0106d;
+    --color-primary-800: #ba1160;
+    --color-primary-900: #9b1354;
 }
 ```
 
@@ -237,7 +255,7 @@ theme: {
 
 Ganti file di:
 - `public/favicon.ico` - Favicon
-- `public/images/logo.png` - Logo aplikasi
+- `public/storage/banner/` - Banner images
 
 ## 📊 Database Schema
 
@@ -245,14 +263,14 @@ Ganti file di:
 
 | Tabel | Deskripsi |
 |-------|-----------|
-| `users` | Data pengguna (admin & customer) |
+| `users` | Data pengguna (owner, admin & customer) |
 | `categories` | Kategori layanan |
 | `services` | Layanan salon |
-| `bookings` | Data booking |
+| `bookings` | Data booking dengan promo |
 | `booking_confirmations` | Konfirmasi booking |
-| `promotions` | Promosi & diskon |
+| `promotions` | Promosi harian |
 | `cancellations` | Data pembatalan |
-| `roles` | Role pengguna |
+| `roles` | Role pengguna (Owner, Admin, Customer) |
 | `permissions` | Permission sistem |
 
 ## 🔧 Perintah Artisan Berguna
@@ -267,14 +285,23 @@ php artisan optimize
 # Melihat daftar route
 php artisan route:list
 
-# Membuat controller
-php artisan make:controller NamaController
-
-# Membuat model dengan migration
-php artisan make:model NamaModel -m
+# Menonaktifkan promo yang sudah kadaluarsa
+php artisan promotions:deactivate-expired
 
 # Fresh migration dengan seeder
 php artisan migrate:fresh --seed
+```
+
+## ⏰ Scheduled Tasks
+
+Aplikasi memiliki scheduled task untuk menonaktifkan promo yang sudah lewat tanggalnya:
+
+```bash
+# Jalankan scheduler (untuk production, tambahkan ke crontab)
+* * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
+
+# Atau jalankan manual
+php artisan promotions:deactivate-expired
 ```
 
 ## 🧪 Testing
@@ -298,25 +325,32 @@ php artisan test --coverage
 | POST | `/forgot-password` | Request reset password |
 | POST | `/reset-password` | Reset password |
 
-### Admin Routes
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| GET | `/admin/dashboard` | Dashboard admin |
-| GET | `/admin/users` | List users |
-| GET | `/admin/categories` | List categories |
-| GET | `/admin/services` | List services |
-| GET | `/admin/bookings` | List bookings |
-| GET | `/admin/promotions` | List promotions |
-| GET | `/admin/reports` | Reports page |
-| GET | `/admin/reports/export` | Export reports |
+### Admin & Owner Routes
+| Method | Endpoint | Deskripsi | Access |
+|--------|----------|-----------|--------|
+| GET | `/admin/dashboard` | Dashboard | Admin, Owner |
+| GET | `/admin/users` | List users | Admin |
+| GET | `/admin/categories` | List categories | Admin |
+| GET | `/admin/services` | List services | Admin |
+| GET | `/admin/bookings` | List bookings | Admin, Owner |
+| GET | `/admin/promotions` | List promotions | Admin |
+| GET | `/admin/reports` | Reports page | Admin, Owner |
+| GET | `/admin/reports/export` | Export reports | Admin, Owner |
+| GET | `/admin/profile` | Profile page | Admin, Owner |
+| GET | `/admin/settings` | Settings page | Admin |
 
 ### Customer Routes
 | Method | Endpoint | Deskripsi |
 |--------|----------|-----------|
 | GET | `/customer/dashboard` | Dashboard customer |
-| GET | `/customer/services` | List services |
+| GET | `/customer/services` | List services dengan promo |
+| GET | `/customer/services/{id}` | Detail service |
 | GET | `/customer/bookings` | List bookings |
 | POST | `/customer/bookings` | Create booking |
+| GET | `/customer/bookings/{id}` | Detail booking |
+| POST | `/customer/bookings/{id}/cancel` | Cancel booking |
+| POST | `/customer/bookings/{id}/upload-payment` | Upload bukti bayar |
+| GET | `/customer/profile` | Profile page |
 
 ## 🐛 Troubleshooting
 
@@ -326,13 +360,6 @@ php artisan test --coverage
 
 ### Error: "Vite manifest not found"
 ```bash
-npm run build
-```
-
-### Error: "The Mix manifest does not exist"
-```bash
-npm run dev
-# atau
 npm run build
 ```
 
@@ -347,6 +374,11 @@ chmod -R 775 storage bootstrap/cache
 composer dump-autoload
 php artisan optimize:clear
 ```
+
+### Promo tidak muncul
+- Pastikan tanggal promo sama dengan hari ini
+- Pastikan promo dalam status aktif
+- Jalankan `php artisan promotions:deactivate-expired` untuk membersihkan promo kadaluarsa
 
 ## 📄 License
 
