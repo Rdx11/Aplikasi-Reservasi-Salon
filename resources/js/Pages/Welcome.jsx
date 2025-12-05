@@ -1,6 +1,6 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { Scissors, Sparkles, Heart, Star, Clock, Shield, ArrowRight, Calendar } from 'lucide-react';
+import { Scissors, Sparkles, Heart, Star, Clock, Shield, ArrowRight, Calendar, Tag } from 'lucide-react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Button } from '@/Components/UI';
 
@@ -148,13 +148,6 @@ const defaultCategories = [
 ];
 
 function PromotionsSection({ promotions, auth }) {
-    const defaultPromos = [
-        { id: 1, title: 'Diskon 30% Hair Treatment', description: 'Khusus member baru', discount_percentage: 30, image: null, service_id: null },
-        { id: 2, title: 'Paket Facial + Massage', description: 'Hemat hingga 200rb', discount_amount: 200000, image: null, service_id: null },
-    ];
-
-    const promoList = promotions.length > 0 ? promotions : defaultPromos;
-
     // Generate URL for promo claim
     const getPromoUrl = (promo) => {
         if (!auth?.user) return '/login';
@@ -183,47 +176,66 @@ function PromotionsSection({ promotions, auth }) {
                     </h2>
                     <p className="text-xl text-gray-600">Jangan lewatkan penawaran menarik dari kami</p>
                 </motion.div>
-                <div className="grid md:grid-cols-2 gap-8">
-                    {promoList.map((promo, index) => (
-                        <motion.div
-                            key={promo.id}
-                            initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-600 to-primary-800 text-white"
-                        >
-                            {/* Background Image */}
-                            {promo.image && (
-                                <div className="absolute inset-0">
-                                    <img 
-                                        src={promo.image} 
-                                        alt={promo.title}
-                                        className="w-full h-full object-cover"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-primary-600/60 to-primary-800/60" />
-                                </div>
-                            )}
-                            
-                            {/* Decorative Circle */}
-                            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-                            
-                            {/* Content */}
-                            <div className="relative p-8">
-                                <span className="inline-block px-3 py-1 bg-gold-400 text-gray-900 rounded-full text-sm font-bold mb-4">
-                                    {promo.discount_percentage ? `${promo.discount_percentage}% OFF` : `Hemat ${new Intl.NumberFormat('id-ID').format(promo.discount_amount)}`}
-                                </span>
-                                <h3 className="text-2xl font-bold mb-2">{promo.title}</h3>
-                                <p className="text-white/80 mb-4">{promo.description}</p>
-                                {promo.service && (
-                                    <p className="text-white/60 text-sm mb-4">Layanan: {promo.service.name}</p>
+
+                {promotions.length === 0 ? (
+                    // No promo available
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-center py-12 bg-gray-50 rounded-2xl"
+                    >
+                        <Tag className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                        <h3 className="text-xl font-semibold text-gray-700 mb-2">Belum Ada Promo Hari Ini</h3>
+                        <p className="text-gray-500 mb-6">Pantau terus halaman ini untuk promo menarik berikutnya!</p>
+                        <Button variant="outline" href="#services">
+                            Lihat Layanan Kami
+                        </Button>
+                    </motion.div>
+                ) : (
+                    // Show promotions
+                    <div className="grid md:grid-cols-2 gap-8">
+                        {promotions.map((promo, index) => (
+                            <motion.div
+                                key={promo.id}
+                                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-600 to-primary-800 text-white"
+                            >
+                                {/* Background Image */}
+                                {promo.image && (
+                                    <div className="absolute inset-0">
+                                        <img 
+                                            src={promo.image} 
+                                            alt={promo.title}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-primary-600/60 to-primary-800/60" />
+                                    </div>
                                 )}
-                                <Button variant="gold" size="sm" href={getPromoUrl(promo)}>
-                                    Klaim Sekarang
-                                </Button>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
+                                
+                                {/* Decorative Circle */}
+                                <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+                                
+                                {/* Content */}
+                                <div className="relative p-8">
+                                    <span className="inline-block px-3 py-1 bg-gold-400 text-gray-900 rounded-full text-sm font-bold mb-4">
+                                        {promo.discount_percentage ? `${promo.discount_percentage}% OFF` : `Hemat ${new Intl.NumberFormat('id-ID').format(promo.discount_amount)}`}
+                                    </span>
+                                    <h3 className="text-2xl font-bold mb-2">{promo.title}</h3>
+                                    <p className="text-white/80 mb-4">{promo.description}</p>
+                                    {promo.service && (
+                                        <p className="text-white/60 text-sm mb-4">Layanan: {promo.service.name}</p>
+                                    )}
+                                    <Button variant="gold" size="sm" href={getPromoUrl(promo)}>
+                                        Klaim Sekarang
+                                    </Button>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
             </div>
         </section>
     );

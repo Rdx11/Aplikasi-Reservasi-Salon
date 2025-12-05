@@ -19,8 +19,7 @@ return new class extends Migration
             $table->decimal('discount_percentage', 5, 2)->nullable();
             $table->decimal('discount_amount', 10, 2)->nullable();
             $table->string('image')->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->date('promo_date');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

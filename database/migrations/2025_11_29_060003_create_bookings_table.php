@@ -21,6 +21,8 @@ return new class extends Migration
             $table->enum('status', ['pending', 'confirmed', 'cancelled', 'completed'])->default('pending');
             $table->text('notes')->nullable();
             $table->decimal('total_price', 10, 2);
+            $table->decimal('original_price', 10, 2)->nullable();
+            $table->unsignedBigInteger('promotion_id')->nullable();
             $table->timestamps();
         });
     }

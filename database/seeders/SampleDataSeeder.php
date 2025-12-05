@@ -48,22 +48,22 @@ class SampleDataSeeder extends Seeder
             Service::create($service);
         }
 
-        // Promotions
+        // Promotions (promo harian - berlaku hari ini)
         Promotion::create([
             'title' => 'Diskon 30% Hair Treatment',
-            'description' => 'Khusus member baru, dapatkan diskon 30% untuk semua layanan hair treatment',
+            'description' => 'Khusus hari ini! Dapatkan diskon 30% untuk semua layanan hair treatment',
             'discount_percentage' => 30,
-            'start_date' => now(),
-            'end_date' => now()->addMonth(),
+            'service_id' => 3, // Hair Treatment
+            'promo_date' => now()->toDateString(),
             'is_active' => true,
         ]);
 
         Promotion::create([
-            'title' => 'Paket Facial + Massage',
-            'description' => 'Hemat hingga Rp 100.000 untuk paket facial dan body massage',
-            'discount_amount' => 100000,
-            'start_date' => now(),
-            'end_date' => now()->addWeeks(2),
+            'title' => 'Diskon 20% Facial Basic',
+            'description' => 'Promo spesial hari ini untuk facial basic',
+            'discount_percentage' => 20,
+            'service_id' => 6, // Facial Basic
+            'promo_date' => now()->toDateString(),
             'is_active' => true,
         ]);
 
