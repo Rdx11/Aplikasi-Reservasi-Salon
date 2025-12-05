@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import clsx from 'clsx';
 
-export const Input = forwardRef(({ label, error, className, icon: Icon, ...props }, ref) => {
+export const Input = forwardRef(({ label, error, helperText, className, icon: Icon, ...props }, ref) => {
     return (
         <div className="space-y-1">
             {label && (
@@ -26,6 +26,7 @@ export const Input = forwardRef(({ label, error, className, icon: Icon, ...props
                     {...props}
                 />
             </div>
+            {helperText && !error && <p className="text-sm text-gray-500">{helperText}</p>}
             {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
     );

@@ -115,12 +115,12 @@ function Footer() {
                         <h4 className="font-semibold mb-4">Kontak</h4>
                         <ul className="space-y-3 text-gray-400">
                             <li className="flex items-center gap-2">
-                                <MapPin className="w-4 h-4" />
-                                <span>Jl. Kecantikan No. 123, Jakarta</span>
+                                <MapPin className="w-8 h-8" />
+                                <span>Bugis, Kec. Sumbawa, Kabupaten Sumbawa, Nusa Tenggara Bar. 84313</span>
                             </li>
                             <li className="flex items-center gap-2">
                                 <Phone className="w-4 h-4" />
-                                <span>+62 812 3456 7890</span>
+                                <span>+62 813 5342 2461</span>
                             </li>
                             <li className="flex items-center gap-2">
                                 <Clock className="w-4 h-4" />

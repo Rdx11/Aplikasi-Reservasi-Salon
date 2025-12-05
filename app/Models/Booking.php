@@ -20,6 +20,8 @@ class Booking extends Model
         'status',
         'notes',
         'total_price',
+        'original_price',
+        'promotion_id',
         'payment_proof',
         'payment_uploaded_at',
     ];
@@ -27,6 +29,7 @@ class Booking extends Model
     protected $casts = [
         'booking_date' => 'date',
         'total_price' => 'decimal:2',
+        'original_price' => 'decimal:2',
         'payment_uploaded_at' => 'datetime',
     ];
 
@@ -38,6 +41,16 @@ class Booking extends Model
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    public function promotion(): BelongsTo
+    {
+        return $this->belongsTo(Promotion::class);
+    }
+
+    public function hasPromo(): bool
+    {
+        return $this->promotion_id !== null;
     }
 
     public function confirmation(): HasOne

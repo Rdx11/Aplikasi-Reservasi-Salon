@@ -24,18 +24,26 @@ class WelcomeController extends Controller
                     'category' => $service->category,
                 ];
             }),
-            'promotions' => Promotion::active()->take(4)->get()->map(function ($promo) {
-                return [
-                    'id' => $promo->id,
-                    'title' => $promo->title,
-                    'description' => $promo->description,
-                    'discount_percentage' => $promo->discount_percentage,
-                    'discount_amount' => $promo->discount_amount,
-                    'image' => $promo->image ? '/storage/' . $promo->image : null,
-                    'start_date' => $promo->start_date,
-                    'end_date' => $promo->end_date,
-                ];
-            }),
+            'promotions' => Promotion::with('service')
+                ->activeToday()
+                ->take(4)
+                ->get()
+                ->map(function ($promo) {
+                    return [
+                        'id' => $promo->id,
+                        'title' => $promo->title,
+                        'description' => $promo->description,
+                        'discount_percentage' => $promo->discount_percentage,
+                        'discount_amount' => $promo->discount_amount,
+                        'image' => $promo->image ? '/storage/' . $promo->image : null,
+                        'service_id' => $promo->service_id,
+                        'service' => $promo->service ? [
+                            'id' => $promo->service->id,
+                            'name' => $promo->service->name,
+                        ] : null,
+                        'promo_date' => $promo->promo_date?->format('Y-m-d'),
+                    ];
+                }),
         ]);
     }
 }

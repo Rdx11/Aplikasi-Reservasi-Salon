@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { Plus, Calendar, Clock, Eye, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Calendar, Clock, Eye, Search, Filter, ChevronLeft, ChevronRight, Tag } from 'lucide-react';
 import CustomerLayout from '@/Layouts/CustomerLayout';
 import { Button, Modal, ConfirmModal, Alert } from '@/Components/UI';
 import BookingForm from './Form';
@@ -161,7 +161,15 @@ export default function CustomerBookingsIndex({ bookings = {}, services = [], fi
                                         <div className="flex items-center gap-4">
                                             <div className="text-right">
                                                 <p className="text-sm text-gray-500">Total</p>
-                                                <p className="text-xl font-bold text-primary-600">{formatPrice(booking.total_price)}</p>
+                                                {booking.original_price && booking.original_price > booking.total_price ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-sm line-through text-gray-400">{formatPrice(booking.original_price)}</span>
+                                                        <p className="text-xl font-bold text-primary-600">{formatPrice(booking.total_price)}</p>
+                                                        <Tag className="w-4 h-4 text-primary-500" />
+                                                    </div>
+                                                ) : (
+                                                    <p className="text-xl font-bold text-primary-600">{formatPrice(booking.total_price)}</p>
+                                                )}
                                             </div>
                                             <div className="flex gap-2">
                                                 <Link

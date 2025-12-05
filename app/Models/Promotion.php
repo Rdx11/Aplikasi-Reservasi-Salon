@@ -17,16 +17,14 @@ class Promotion extends Model
         'discount_percentage',
         'discount_amount',
         'image',
-        'start_date',
-        'end_date',
+        'promo_date',
         'is_active',
     ];
 
     protected $casts = [
         'discount_percentage' => 'decimal:2',
         'discount_amount' => 'decimal:2',
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'promo_date' => 'date',
         'is_active' => 'boolean',
     ];
 
@@ -37,8 +35,48 @@ class Promotion extends Model
 
     public function scopeActive($query)
     {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeActiveOnDate($query, $date)
+    {
         return $query->where('is_active', true)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now());
+            ->whereDate('promo_date', $date);
+    }
+
+    public function scopeActiveToday($query)
+    {
+        return $query->activeOnDate(now()->toDateString());
+    }
+
+    /**
+     * Get active promotion for a service on a specific date
+     */
+    public static function getForService($serviceId, $date)
+    {
+        return static::where('is_active', true)
+            ->whereDate('promo_date', $date)
+            ->where(function ($q) use ($serviceId) {
+                $q->where('service_id', $serviceId)
+                  ->orWhereNull('service_id'); // Promo untuk semua layanan
+            })
+            ->orderByRaw('service_id IS NULL') // Prioritaskan promo spesifik
+            ->first();
+    }
+
+    /**
+     * Calculate discounted price
+     */
+    public function calculateDiscountedPrice($originalPrice)
+    {
+        if ($this->discount_percentage) {
+            return $originalPrice - ($originalPrice * $this->discount_percentage / 100);
+        }
+        
+        if ($this->discount_amount) {
+            return max(0, $originalPrice - $this->discount_amount);
+        }
+
+        return $originalPrice;
     }
 }

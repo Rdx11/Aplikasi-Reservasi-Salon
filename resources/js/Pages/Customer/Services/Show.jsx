@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { Clock, ArrowLeft, Calendar, Sparkles, CheckCircle } from 'lucide-react';
+import { Clock, ArrowLeft, Calendar, Sparkles, CheckCircle, Tag } from 'lucide-react';
 import CustomerLayout from '@/Layouts/CustomerLayout';
 import { Button, Modal, Select, Textarea, Alert } from '@/Components/UI';
 
@@ -51,9 +51,17 @@ export default function CustomerServiceShow({ service, relatedServices = [] }) {
                         className="space-y-6"
                     >
                         <div>
-                            <span className="inline-block px-3 py-1 bg-primary-100 text-primary-600 rounded-full text-sm font-medium mb-3">
-                                {service.category?.name}
-                            </span>
+                            <div className="flex items-center gap-2 mb-3">
+                                <span className="inline-block px-3 py-1 bg-primary-100 text-primary-600 rounded-full text-sm font-medium">
+                                    {service.category?.name}
+                                </span>
+                                {service.active_promo && (
+                                    <span className="flex items-center gap-1 px-3 py-1 bg-primary-500 text-white rounded-full text-sm font-bold">
+                                        <Tag className="w-3 h-3" />
+                                        PROMO
+                                    </span>
+                                )}
+                            </div>
                             <h1 className="text-3xl font-bold text-gray-900 mb-2">{service.name}</h1>
                             <div className="flex items-center gap-4 text-gray-500">
                                 <span className="flex items-center gap-1">
@@ -63,9 +71,27 @@ export default function CustomerServiceShow({ service, relatedServices = [] }) {
                             </div>
                         </div>
 
-                        <div className="text-3xl font-bold text-primary-600">
-                            {formatPrice(service.price)}
-                        </div>
+                        {service.active_promo ? (
+                            <div className="p-4 bg-gradient-to-r from-primary-50 to-gold-50 rounded-xl border border-primary-200">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <span className="text-xl line-through text-gray-400">
+                                        {formatPrice(service.price)}
+                                    </span>
+                                    <span className="text-3xl font-bold text-primary-600">
+                                        {formatPrice(service.active_promo.discounted_price)}
+                                    </span>
+                                </div>
+                                <p className="text-sm text-primary-700">
+                                    🎉 <strong>{service.active_promo.title}</strong> - Hemat {service.active_promo.discount_percentage 
+                                        ? `${service.active_promo.discount_percentage}%` 
+                                        : formatPrice(service.active_promo.discount_amount)}! Promo berlaku hari ini saja.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="text-3xl font-bold text-primary-600">
+                                {formatPrice(service.price)}
+                            </div>
+                        )}
 
                         <div className="prose prose-gray">
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Deskripsi</h3>
@@ -99,11 +125,24 @@ export default function CustomerServiceShow({ service, relatedServices = [] }) {
                                 <Link
                                     key={related.id}
                                     href={`/customer/services/${related.id}`}
-                                    className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-primary-200 transition"
+                                    className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-primary-200 transition relative"
                                 >
+                                    {related.active_promo && (
+                                        <span className="absolute -top-2 -right-2 flex items-center gap-1 px-2 py-0.5 bg-primary-500 text-white rounded-full text-xs font-bold">
+                                            <Tag className="w-3 h-3" />
+                                            PROMO
+                                        </span>
+                                    )}
                                     <h4 className="font-medium text-gray-900 mb-1">{related.name}</h4>
                                     <p className="text-sm text-gray-500 mb-2">{related.duration} menit</p>
-                                    <p className="font-semibold text-primary-600">{formatPrice(related.price)}</p>
+                                    {related.active_promo ? (
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm line-through text-gray-400">{formatPrice(related.price)}</span>
+                                            <span className="font-semibold text-primary-600">{formatPrice(related.active_promo.discounted_price)}</span>
+                                        </div>
+                                    ) : (
+                                        <p className="font-semibold text-primary-600">{formatPrice(related.price)}</p>
+                                    )}
                                 </Link>
                             ))}
                         </div>
@@ -124,7 +163,7 @@ export default function CustomerServiceShow({ service, relatedServices = [] }) {
 function BookingModal({ isOpen, onClose, service }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         service_id: service.id,
-        booking_date: '',
+        booking_date: new Date().toISOString().split('T')[0], // Default hari ini
         booking_time: '',
         notes: '',
     });
@@ -148,16 +187,36 @@ function BookingModal({ isOpen, onClose, service }) {
 
     const formatPrice = (price) => `Rp ${new Intl.NumberFormat('id-ID').format(price)}`;
 
+    const isPromoToday = data.booking_date === new Date().toISOString().split('T')[0] && service.active_promo;
+
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Booking Layanan" size="md">
             <form onSubmit={submit} className="space-y-5">
                 {/* Service Info */}
-                <div className="p-4 bg-primary-50 rounded-xl">
-                    <h4 className="font-semibold text-primary-900">{service.name}</h4>
+                <div className={`p-4 rounded-xl ${isPromoToday ? 'bg-gradient-to-r from-primary-50 to-gold-50 border border-primary-200' : 'bg-primary-50'}`}>
+                    <div className="flex items-center justify-between">
+                        <h4 className="font-semibold text-primary-900">{service.name}</h4>
+                        {isPromoToday && (
+                            <span className="flex items-center gap-1 px-2 py-0.5 bg-primary-500 text-white rounded-full text-xs font-bold">
+                                <Tag className="w-3 h-3" />
+                                PROMO
+                            </span>
+                        )}
+                    </div>
                     <div className="flex items-center justify-between mt-2">
                         <span className="text-sm text-primary-700">{service.duration} menit</span>
-                        <span className="font-bold text-primary-800">{formatPrice(service.price)}</span>
+                        {isPromoToday ? (
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm line-through text-gray-400">{formatPrice(service.price)}</span>
+                                <span className="font-bold text-primary-800">{formatPrice(service.active_promo.discounted_price)}</span>
+                            </div>
+                        ) : (
+                            <span className="font-bold text-primary-800">{formatPrice(service.price)}</span>
+                        )}
                     </div>
+                    {isPromoToday && (
+                        <p className="text-xs text-primary-600 mt-2">🎉 {service.active_promo.title} - Promo hari ini!</p>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

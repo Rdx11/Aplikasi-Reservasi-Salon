@@ -14,9 +14,20 @@ export default function PromotionsIndex({ promotions = [], services = [] }) {
 
     const formatDate = (date) => new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
+    const isPromoToday = (promoDate) => {
+        if (!promoDate) return false;
+        const today = new Date().toISOString().split('T')[0];
+        return promoDate === today;
+    };
+
     const columns = [
         { key: 'id', label: 'ID' },
         { key: 'title', label: 'Judul' },
+        {
+            key: 'service',
+            label: 'Layanan',
+            render: (_, item) => item.service?.name || 'Semua Layanan',
+        },
         {
             key: 'discount',
             label: 'Diskon',
@@ -24,14 +35,37 @@ export default function PromotionsIndex({ promotions = [], services = [] }) {
                 ? `${item.discount_percentage}%`
                 : `Rp ${new Intl.NumberFormat('id-ID').format(item.discount_amount)}`,
         },
-        { key: 'start_date', label: 'Mulai', render: formatDate },
-        { key: 'end_date', label: 'Berakhir', render: formatDate },
+        {
+            key: 'promo_date',
+            label: 'Tanggal Promo',
+            render: (val, item) => (
+                <div className="flex items-center gap-2">
+                    <span className={item.is_expired ? 'text-gray-400' : ''}>{formatDate(val)}</span>
+                    {isPromoToday(item.promo_date) && (
+                        <span className="px-2 py-0.5 bg-primary-100 text-primary-700 rounded-full text-xs font-medium">
+                            Hari Ini
+                        </span>
+                    )}
+                    {item.is_expired && (
+                        <span className="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+                            Kadaluarsa
+                        </span>
+                    )}
+                </div>
+            ),
+        },
         {
             key: 'is_active',
             label: 'Status',
-            render: (val) => (
-                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${val ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                    {val ? 'Aktif' : 'Nonaktif'}
+            render: (val, item) => (
+                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                    item.is_expired 
+                        ? 'bg-red-100 text-red-700' 
+                        : val 
+                            ? 'bg-green-100 text-green-700' 
+                            : 'bg-gray-100 text-gray-700'
+                }`}>
+                    {item.is_expired ? 'Kadaluarsa' : val ? 'Aktif' : 'Nonaktif'}
                 </span>
             ),
         },

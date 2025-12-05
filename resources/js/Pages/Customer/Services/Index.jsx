@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Clock, Sparkles } from 'lucide-react';
+import { Search, Clock, Sparkles, Tag } from 'lucide-react';
 import CustomerLayout from '@/Layouts/CustomerLayout';
 import { LazyImage, Skeleton, SkeletonServiceCard } from '@/Components/UI';
 import { useLoadingState, useLazyLoad } from '@/Hooks/useLazyLoad';
@@ -9,15 +9,20 @@ import { useLoadingState, useLazyLoad } from '@/Hooks/useLazyLoad';
 export default function CustomerServicesIndex({ categories = [], services = [] }) {
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const [showPromoOnly, setShowPromoOnly] = useState(false);
     const [isLoading] = useLoadingState(true, 500);
 
     const formatPrice = (price) => `Rp ${new Intl.NumberFormat('id-ID').format(price)}`;
+
+    // Count services with promo
+    const promoCount = services.filter((s) => s.active_promo).length;
 
     const filteredServices = services.filter((service) => {
         const matchSearch = service.name.toLowerCase().includes(search.toLowerCase()) ||
             service.description?.toLowerCase().includes(search.toLowerCase());
         const matchCategory = selectedCategory === 'all' || service.category_id == selectedCategory;
-        return matchSearch && matchCategory;
+        const matchPromo = !showPromoOnly || service.active_promo;
+        return matchSearch && matchCategory && matchPromo;
     });
 
     // Skeleton Loading
@@ -91,6 +96,19 @@ export default function CustomerServicesIndex({ categories = [], services = [] }
                                 {cat.name}
                             </button>
                         ))}
+                        {promoCount > 0 && (
+                            <button
+                                onClick={() => setShowPromoOnly(!showPromoOnly)}
+                                className={`flex items-center gap-1 px-4 py-2 rounded-xl font-medium whitespace-nowrap transition ${
+                                    showPromoOnly
+                                        ? 'bg-gradient-to-r from-primary-500 to-gold-500 text-white shadow-lg'
+                                        : 'bg-gradient-to-r from-primary-100 to-gold-100 text-primary-700 hover:from-primary-200 hover:to-gold-200'
+                                }`}
+                            >
+                                <Tag className="w-4 h-4" />
+                                Promo ({promoCount})
+                            </button>
+                        )}
                     </div>
                 </motion.div>
 
@@ -160,11 +178,21 @@ function ServiceCard({ service, index, formatPrice }) {
                                     <Sparkles className="w-16 h-16 text-primary-300" />
                                 </div>
                             )}
-                            <div className="absolute top-3 left-3">
+                            <div className="absolute top-3 left-3 flex gap-2">
                                 <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-primary-600">
                                     {service.category?.name}
                                 </span>
                             </div>
+                            {service.active_promo && (
+                                <div className="absolute top-3 right-3">
+                                    <span className="flex items-center gap-1 px-2 py-1 bg-primary-500 text-white rounded-full text-xs font-bold shadow-lg">
+                                        <Tag className="w-3 h-3" />
+                                        {service.active_promo.discount_percentage 
+                                            ? `${service.active_promo.discount_percentage}% OFF` 
+                                            : `Hemat ${formatPrice(service.active_promo.discount_amount)}`}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                         <div className="p-5">
                             <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition">
@@ -174,14 +202,30 @@ function ServiceCard({ service, index, formatPrice }) {
                                 {service.description}
                             </p>
                             <div className="flex items-center justify-between">
-                                <span className="text-lg font-bold text-primary-600">
-                                    {formatPrice(service.price)}
-                                </span>
+                                {service.active_promo ? (
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm line-through text-gray-400">
+                                            {formatPrice(service.price)}
+                                        </span>
+                                        <span className="text-lg font-bold text-primary-600">
+                                            {formatPrice(service.active_promo.discounted_price)}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <span className="text-lg font-bold text-primary-600">
+                                        {formatPrice(service.price)}
+                                    </span>
+                                )}
                                 <span className="flex items-center gap-1 text-sm text-gray-500">
                                     <Clock className="w-4 h-4" />
                                     {service.duration} menit
                                 </span>
                             </div>
+                            {service.active_promo && (
+                                <p className="text-xs text-primary-600 mt-2">
+                                    🎉 {service.active_promo.title} - Hari ini saja!
+                                </p>
+                            )}
                         </div>
                     </Link>
                 </motion.div>

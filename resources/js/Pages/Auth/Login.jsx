@@ -110,13 +110,12 @@ export default function Login({ status }) {
 
                 {/* Right Side - Image */}
                 <div className="hidden lg:block lg:w-1/2 relative">
-                    <div className="absolute inset-0 gradient-primary" />
                     <img
                         src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=1200&fit=crop"
                         alt="Salon"
-                        className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50"
+                        className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center p-12">
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-12">
                         <div className="text-center text-white">
                             <Scissors className="w-20 h-20 mx-auto mb-6 opacity-80" />
                             <h2 className="text-4xl font-serif font-bold mb-4">Rasta Salon</h2>

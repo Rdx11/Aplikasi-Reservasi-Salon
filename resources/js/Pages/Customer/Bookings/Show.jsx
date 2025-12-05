@@ -1,18 +1,32 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Clock, MapPin, Phone, Mail, CheckCircle, XCircle, AlertCircle, Sparkles, Upload, Image, CreditCard } from 'lucide-react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Calendar, Clock, MapPin, Phone, Mail, CheckCircle, XCircle, AlertCircle, Sparkles, Upload, Image, CreditCard, Tag, X } from 'lucide-react';
 import CustomerLayout from '@/Layouts/CustomerLayout';
-import { Button, ConfirmModal, Alert } from '@/Components/UI';
-import { useState, useRef } from 'react';
+import { Button, ConfirmModal } from '@/Components/UI';
+import { useState, useRef, useEffect } from 'react';
 
 export default function CustomerBookingShow({ booking }) {
+    const { flash } = usePage().props;
     const [showCancel, setShowCancel] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
+    const [toast, setToast] = useState(null);
     const fileInputRef = useRef(null);
     
     const { data, setData, post, processing, errors } = useForm({
         payment_proof: null,
     });
+
+    // Show toast when flash message exists
+    useEffect(() => {
+        if (flash?.success) {
+            setToast({ message: flash.success, type: 'success' });
+            setTimeout(() => setToast(null), 5000);
+        }
+        if (flash?.error) {
+            setToast({ message: flash.error, type: 'error' });
+            setTimeout(() => setToast(null), 5000);
+        }
+    }, [flash]);
 
     const formatPrice = (price) => `Rp ${new Intl.NumberFormat('id-ID').format(price)}`;
     const formatDate = (date) => new Date(date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -61,6 +75,32 @@ export default function CustomerBookingShow({ booking }) {
         <CustomerLayout>
             <Head title={`Booking ${booking.booking_code}`} />
 
+            {/* Toast Notification */}
+            <AnimatePresence>
+                {toast && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -50, x: '-50%' }}
+                        animate={{ opacity: 1, y: 0, x: '-50%' }}
+                        exit={{ opacity: 0, y: -50, x: '-50%' }}
+                        className={`fixed top-4 left-1/2 z-50 flex items-center gap-3 px-6 py-4 rounded-xl shadow-lg ${
+                            toast.type === 'success' 
+                                ? 'bg-green-500 text-white' 
+                                : 'bg-red-500 text-white'
+                        }`}
+                    >
+                        {toast.type === 'success' ? (
+                            <CheckCircle className="w-5 h-5" />
+                        ) : (
+                            <XCircle className="w-5 h-5" />
+                        )}
+                        <span className="font-medium">{toast.message}</span>
+                        <button onClick={() => setToast(null)} className="ml-2 hover:opacity-80">
+                            <X className="w-4 h-4" />
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <div className="max-w-3xl mx-auto space-y-6">
                 {/* Back Button */}
                 <Link
@@ -105,9 +145,31 @@ export default function CustomerBookingShow({ booking }) {
                             </div>
                             <div className="text-right">
                                 <p className="text-sm text-gray-500">Total</p>
-                                <p className="text-xl font-bold text-primary-600">{formatPrice(booking.total_price)}</p>
+                                {booking.original_price && booking.original_price > booking.total_price ? (
+                                    <div>
+                                        <p className="text-sm line-through text-gray-400">{formatPrice(booking.original_price)}</p>
+                                        <p className="text-xl font-bold text-primary-600">{formatPrice(booking.total_price)}</p>
+                                    </div>
+                                ) : (
+                                    <p className="text-xl font-bold text-primary-600">{formatPrice(booking.total_price)}</p>
+                                )}
                             </div>
                         </div>
+
+                        {/* Promo Info */}
+                        {booking.promotion && (
+                            <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-primary-50 to-gold-50 rounded-xl border border-primary-200">
+                                <Tag className="w-5 h-5 text-primary-600" />
+                                <div>
+                                    <p className="font-medium text-primary-900">🎉 {booking.promotion.title}</p>
+                                    <p className="text-sm text-primary-600">
+                                        Hemat {booking.promotion.discount_percentage 
+                                            ? `${booking.promotion.discount_percentage}%` 
+                                            : formatPrice(booking.promotion.discount_amount)}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Booking Details */}
                         <div className="grid sm:grid-cols-2 gap-4">

@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react';
-import { useForm } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 import { Button, Input, Textarea, Select } from '@/Components/UI';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { X, Image as ImageIcon } from 'lucide-react';
 
 export default function PromotionForm({ promotion, services = [], onSuccess }) {
     const [imagePreview, setImagePreview] = useState(promotion?.image || null);
+    const [removeExistingImage, setRemoveExistingImage] = useState(false);
     const fileInputRef = useRef(null);
 
     const { data, setData, post, processing, errors } = useForm({
@@ -12,10 +13,8 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
         description: promotion?.description || '',
         service_id: promotion?.service_id || '',
         discount_percentage: promotion?.discount_percentage || '',
-        discount_amount: promotion?.discount_amount || '',
         image: null,
-        start_date: promotion?.start_date || '',
-        end_date: promotion?.end_date || '',
+        promo_date: promotion?.promo_date || '',
         is_active: promotion?.is_active ?? true,
     });
 
@@ -23,6 +22,7 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
         const file = e.target.files[0];
         if (file) {
             setData('image', file);
+            setRemoveExistingImage(false);
             const reader = new FileReader();
             reader.onload = (e) => setImagePreview(e.target.result);
             reader.readAsDataURL(file);
@@ -32,6 +32,7 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
     const removeImage = () => {
         setData('image', null);
         setImagePreview(null);
+        setRemoveExistingImage(true); // Mark that existing image should be removed
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -40,30 +41,25 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
     const submit = (e) => {
         e.preventDefault();
         
-        const formData = new FormData();
-        formData.append('title', data.title);
-        formData.append('description', data.description);
-        formData.append('service_id', data.service_id || '');
-        formData.append('discount_percentage', data.discount_percentage || '');
-        formData.append('discount_amount', data.discount_amount || '');
-        formData.append('start_date', data.start_date);
-        formData.append('end_date', data.end_date);
-        formData.append('is_active', data.is_active ? '1' : '0');
-        
-        if (data.image) {
-            formData.append('image', data.image);
-        }
-
         if (promotion) {
-            formData.append('_method', 'PUT');
-            post(`/admin/promotions/${promotion.id}`, {
-                data: formData,
+            // Update - use router.post with _method spoofing
+            router.post(`/admin/promotions/${promotion.id}`, {
+                _method: 'PUT',
+                title: data.title,
+                description: data.description,
+                service_id: data.service_id || '',
+                discount_percentage: data.discount_percentage || '',
+                promo_date: data.promo_date,
+                is_active: data.is_active ? '1' : '0',
+                image: data.image,
+                remove_image: removeExistingImage ? '1' : '0',
+            }, {
                 forceFormData: true,
                 onSuccess,
             });
         } else {
+            // Create - use useForm's post
             post('/admin/promotions', {
-                data: formData,
                 forceFormData: true,
                 onSuccess,
             });
@@ -102,43 +98,26 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
                 error={errors.service_id}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-                <Input
-                    label="Diskon Persentase (%)"
-                    type="number"
-                    placeholder="10"
-                    value={data.discount_percentage}
-                    onChange={(e) => setData('discount_percentage', e.target.value)}
-                    error={errors.discount_percentage}
-                />
+            <Input
+                label="Diskon Persentase (%)"
+                type="number"
+                placeholder="10"
+                min="1"
+                max="100"
+                value={data.discount_percentage}
+                onChange={(e) => setData('discount_percentage', e.target.value)}
+                error={errors.discount_percentage}
+                helperText="Masukkan angka 1-100"
+            />
 
-                <Input
-                    label="Diskon Nominal (Rp)"
-                    type="number"
-                    placeholder="50000"
-                    value={data.discount_amount}
-                    onChange={(e) => setData('discount_amount', e.target.value)}
-                    error={errors.discount_amount}
-                />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-                <Input
-                    label="Tanggal Mulai"
-                    type="date"
-                    value={data.start_date}
-                    onChange={(e) => setData('start_date', e.target.value)}
-                    error={errors.start_date}
-                />
-
-                <Input
-                    label="Tanggal Berakhir"
-                    type="date"
-                    value={data.end_date}
-                    onChange={(e) => setData('end_date', e.target.value)}
-                    error={errors.end_date}
-                />
-            </div>
+            <Input
+                label="Tanggal Promo"
+                type="date"
+                value={data.promo_date}
+                onChange={(e) => setData('promo_date', e.target.value)}
+                error={errors.promo_date}
+                helperText="Promo hanya berlaku pada tanggal ini"
+            />
 
             {/* Image Upload */}
             <div>
@@ -151,7 +130,8 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
                         <img
                             src={imagePreview}
                             alt="Preview"
-                            className="w-full max-w-xs h-40 object-cover rounded-xl border border-gray-200"
+                            className="w-full max-w-xs h-40 object-cover rounded-xl border border-gray-200 cursor-pointer"
+                            onClick={() => fileInputRef.current?.click()}
                         />
                         <button
                             type="button"
@@ -160,6 +140,7 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
                         >
                             <X className="w-4 h-4" />
                         </button>
+                        <p className="text-xs text-gray-500 mt-2">Klik gambar untuk mengganti</p>
                     </div>
                 ) : (
                     <div

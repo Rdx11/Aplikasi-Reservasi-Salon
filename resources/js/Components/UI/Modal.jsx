@@ -23,28 +23,27 @@ export function Modal({ isOpen, onClose, title, children, size = 'md', showClose
                         onClick={onClose}
                         className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
                     />
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                            className={clsx('w-full bg-white rounded-2xl shadow-2xl overflow-hidden', sizes[size])}
+                            className={clsx('relative w-full bg-white rounded-2xl shadow-2xl my-auto', sizes[size])}
                         >
-                            {title && (
-                                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-                                    <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-                                    {showClose && (
-                                        <button
-                                            onClick={onClose}
-                                            className="p-2 hover:bg-gray-100 rounded-xl transition"
-                                        >
-                                            <X className="w-5 h-5 text-gray-500" />
-                                        </button>
-                                    )}
-                                </div>
-                            )}
-                            <div className="p-6">{children}</div>
+                            {/* Header with close button - always visible */}
+                            <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white rounded-t-2xl">
+                                <h3 className="text-lg font-semibold text-gray-900">{title || ''}</h3>
+                                {showClose && (
+                                    <button
+                                        onClick={onClose}
+                                        className="p-2 hover:bg-gray-100 rounded-xl transition flex-shrink-0"
+                                    >
+                                        <X className="w-5 h-5 text-gray-500" />
+                                    </button>
+                                )}
+                            </div>
+                            <div className="p-6 max-h-[calc(100vh-10rem)] overflow-y-auto">{children}</div>
                         </motion.div>
                     </div>
                 </Fragment>

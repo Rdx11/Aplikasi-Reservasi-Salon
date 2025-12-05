@@ -70,12 +70,12 @@ function HeroSection({ auth }) {
                         className="relative"
                     >
                         <div className="relative w-full aspect-square max-w-lg mx-auto">
-                            <div className="absolute inset-0 gradient-primary rounded-3xl rotate-6 opacity-20" />
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary-400 to-primary-600 rounded-3xl overflow-hidden">
+                            <div className="absolute inset-0 bg-gray-200 rounded-3xl rotate-6 opacity-20" />
+                            <div className="absolute inset-0 rounded-3xl overflow-hidden shadow-xl">
                                 <img
                                     src="/storage/banner/banner-1.jpg"
                                     alt="Rasta Salon"
-                                    className="w-full h-full object-cover mix-blend-overlay opacity-80"
+                                    className="w-full h-full object-cover"
                                 />
                             </div>
                         </div>
@@ -149,11 +149,25 @@ const defaultCategories = [
 
 function PromotionsSection({ promotions, auth }) {
     const defaultPromos = [
-        { id: 1, title: 'Diskon 30% Hair Treatment', description: 'Khusus member baru', discount_percentage: 30, image: null },
-        { id: 2, title: 'Paket Facial + Massage', description: 'Hemat hingga 200rb', discount_amount: 200000, image: null },
+        { id: 1, title: 'Diskon 30% Hair Treatment', description: 'Khusus member baru', discount_percentage: 30, image: null, service_id: null },
+        { id: 2, title: 'Paket Facial + Massage', description: 'Hemat hingga 200rb', discount_amount: 200000, image: null, service_id: null },
     ];
 
     const promoList = promotions.length > 0 ? promotions : defaultPromos;
+
+    // Generate URL for promo claim
+    const getPromoUrl = (promo) => {
+        if (!auth?.user) return '/login';
+        if (auth?.user?.roles?.includes('Admin') || auth?.user?.roles?.includes('Owner')) {
+            return '/admin/bookings';
+        }
+        // If promo has specific service, go to that service page
+        if (promo.service_id) {
+            return `/customer/services/${promo.service_id}`;
+        }
+        // Otherwise go to services page with promo filter
+        return '/customer/services';
+    };
 
     return (
         <section id="promotions" className="py-24">
@@ -199,8 +213,13 @@ function PromotionsSection({ promotions, auth }) {
                                     {promo.discount_percentage ? `${promo.discount_percentage}% OFF` : `Hemat ${new Intl.NumberFormat('id-ID').format(promo.discount_amount)}`}
                                 </span>
                                 <h3 className="text-2xl font-bold mb-2">{promo.title}</h3>
-                                <p className="text-white/80 mb-6">{promo.description}</p>
-                                <Button variant="gold" size="sm" href={!auth?.user ? '/login' : (auth?.user?.roles?.includes('Admin') ? '/admin/bookings' : '/customer/bookings')}>Klaim Sekarang</Button>
+                                <p className="text-white/80 mb-4">{promo.description}</p>
+                                {promo.service && (
+                                    <p className="text-white/60 text-sm mb-4">Layanan: {promo.service.name}</p>
+                                )}
+                                <Button variant="gold" size="sm" href={getPromoUrl(promo)}>
+                                    Klaim Sekarang
+                                </Button>
                             </div>
                         </motion.div>
                     ))}

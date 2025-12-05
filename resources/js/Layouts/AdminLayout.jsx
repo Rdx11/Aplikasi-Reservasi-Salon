@@ -15,7 +15,7 @@ const menuItems = [
     { name: 'Services', href: '/admin/services', icon: Sparkles, roles: ['Admin'] },
     { name: 'Bookings', href: '/admin/bookings', icon: Calendar, roles: ['Admin', 'Owner'] },
     { name: 'Promotions', href: '/admin/promotions', icon: Tag, roles: ['Admin'] },
-    { name: 'Reports', href: '/admin/reports', icon: FileText, roles: ['Admin'] },
+    { name: 'Reports', href: '/admin/reports', icon: FileText, roles: ['Admin', 'Owner'] },
 ];
 
 export default function AdminLayout({ children, title }) {

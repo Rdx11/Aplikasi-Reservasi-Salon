@@ -13,8 +13,14 @@ class PromotionController extends Controller
 {
     public function index()
     {
+        // Auto-deactivate expired promotions
+        Promotion::where('is_active', true)
+            ->whereDate('promo_date', '<', now()->toDateString())
+            ->update(['is_active' => false]);
+
         return Inertia::render('Admin/Promotions/Index', [
             'promotions' => Promotion::with('service')->latest()->get()->map(function ($promo) {
+                $isExpired = $promo->promo_date && $promo->promo_date->lt(now()->startOfDay());
                 return [
                     'id' => $promo->id,
                     'title' => $promo->title,
@@ -24,9 +30,9 @@ class PromotionController extends Controller
                     'discount_percentage' => $promo->discount_percentage,
                     'discount_amount' => $promo->discount_amount,
                     'image' => $promo->image ? '/storage/' . $promo->image : null,
-                    'start_date' => $promo->start_date,
-                    'end_date' => $promo->end_date,
+                    'promo_date' => $promo->promo_date?->format('Y-m-d'),
                     'is_active' => $promo->is_active,
+                    'is_expired' => $isExpired,
                 ];
             }),
             'services' => Service::where('is_active', true)->get(),
@@ -42,8 +48,7 @@ class PromotionController extends Controller
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'discount_amount' => 'nullable|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'promo_date' => 'required|date',
             'is_active' => 'boolean',
         ]);
 
@@ -65,21 +70,29 @@ class PromotionController extends Controller
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'discount_amount' => 'nullable|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'promo_date' => 'required|date',
             'is_active' => 'boolean',
+            'remove_image' => 'nullable|string',
         ]);
 
-        if ($request->hasFile('image')) {
-            // Delete old image
+        // Handle image removal
+        if ($request->input('remove_image') === '1') {
+            if ($promotion->image) {
+                Storage::disk('public')->delete($promotion->image);
+            }
+            $validated['image'] = null;
+        } elseif ($request->hasFile('image')) {
+            // Delete old image and upload new one
             if ($promotion->image) {
                 Storage::disk('public')->delete($promotion->image);
             }
             $validated['image'] = $request->file('image')->store('promotions', 'public');
         } else {
+            // Keep existing image
             unset($validated['image']);
         }
 
+        unset($validated['remove_image']);
         $promotion->update($validated);
 
         return redirect()->back()->with('success', 'Promosi berhasil diupdate');
