@@ -273,6 +273,78 @@ Ganti file di:
 | `roles` | Role pengguna (Owner, Admin, Customer) |
 | `permissions` | Permission sistem |
 
+## 📐 Class Diagram
+
+### Relasi Antar Model
+
+```
+┌─────────────┐       ┌─────────────┐       ┌─────────────┐
+│   Category  │ 1───* │   Service   │ 1───* │   Booking   │
+├─────────────┤       ├─────────────┤       ├─────────────┤
+│ name        │       │ category_id │       │ booking_code│
+│ description │       │ name        │       │ user_id     │
+│ icon        │       │ description │       │ service_id  │
+│ is_active   │       │ price       │       │ promotion_id│
+└─────────────┘       │ duration    │       │ booking_date│
+                      │ image       │       │ booking_time│
+                      │ is_active   │       │ status      │
+                      └─────────────┘       │ total_price │
+                            │               │ notes       │
+                            │ 1             │ payment_proof│
+                            │               └──────┬──────┘
+                            ▼                      │
+                      ┌─────────────┐              │ 1
+                      │  Promotion  │              │
+                      ├─────────────┤              ├───────────────┐
+                      │ title       │              │               │
+                      │ service_id  │              ▼ 1             ▼ 1
+                      │ discount_%  │    ┌─────────────────┐ ┌─────────────┐
+                      │ discount_amt│    │BookingConfirm.  │ │ Cancellation│
+                      │ promo_date  │    ├─────────────────┤ ├─────────────┤
+                      │ is_active   │    │ booking_id      │ │ booking_id  │
+                      └─────────────┘    │ confirmed_by    │ │ cancelled_by│
+                                         │ payment_proof   │ │ reason      │
+                      ┌─────────────┐    │ bank_name       │ │ cancelled_at│
+                      │    User     │    │ account_number  │ └─────────────┘
+                      ├─────────────┤    └─────────────────┘
+                      │ name        │           ▲
+                      │ email       │           │
+                      │ phone       │ 1─────────┘
+                      │ address     │
+                      │ is_active   │ 1───* Booking
+                      └─────────────┘
+```
+
+### Deskripsi Relasi
+
+| Model | Relasi |
+|-------|--------|
+| **User** | Has many Booking, BookingConfirmation, Cancellation |
+| **Category** | Has many Service |
+| **Service** | Belongs to Category, Has many Booking & Promotion |
+| **Promotion** | Belongs to Service, Has many Booking |
+| **Booking** | Belongs to User, Service, Promotion. Has one Confirmation & Cancellation |
+| **BookingConfirmation** | Belongs to Booking & User (confirmer) |
+| **Cancellation** | Belongs to Booking & User (canceller) |
+
+### Generate Class Diagram
+
+Untuk generate class diagram dalam format PlantUML, jalankan:
+
+```bash
+php generate-class-diagram.php
+```
+
+File `class-diagram.puml` akan dibuat. Untuk visualisasi:
+- **Online**: Buka https://www.plantuml.com/plantuml/uml/ dan paste isi file
+- **VS Code**: Install extension "PlantUML" lalu tekan `Alt+D` untuk preview
+
+Alternatif menggunakan package Laravel:
+```bash
+composer require beyondcode/laravel-er-diagram-generator --dev
+php artisan generate:erd
+```
+
 ## 🔧 Perintah Artisan Berguna
 
 ```bash
