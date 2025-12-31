@@ -10,10 +10,23 @@ class Promotion extends Model
 {
     use HasFactory;
 
+    /**
+     * The primary key for the model.
+     */
+    protected $primaryKey = 'id_promotion';
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'id_promotion';
+    }
+
     protected $fillable = [
         'title',
         'description',
-        'service_id',
+        'id_service',
         'discount_percentage',
         'discount_amount',
         'image',
@@ -30,7 +43,7 @@ class Promotion extends Model
 
     public function service(): BelongsTo
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Service::class, 'id_service');
     }
 
     public function scopeActive($query)
@@ -57,10 +70,10 @@ class Promotion extends Model
         return static::where('is_active', true)
             ->whereDate('promo_date', $date)
             ->where(function ($q) use ($serviceId) {
-                $q->where('service_id', $serviceId)
-                  ->orWhereNull('service_id'); // Promo untuk semua layanan
+                $q->where('id_service', $serviceId)
+                  ->orWhereNull('id_service'); // Promo untuk semua layanan
             })
-            ->orderByRaw('service_id IS NULL') // Prioritaskan promo spesifik
+            ->orderByRaw('id_service IS NULL') // Prioritaskan promo spesifik
             ->first();
     }
 

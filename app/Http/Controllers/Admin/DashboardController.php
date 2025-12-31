@@ -73,7 +73,7 @@ class DashboardController extends Controller
             ->get()
             ->map(function ($booking) {
                 return [
-                    'id' => $booking->id,
+                    'id' => $booking->id_booking,
                     'booking_code' => $booking->booking_code,
                     'customer_name' => $booking->user->name ?? 'Unknown',
                     'service_name' => $booking->service->name ?? 'Unknown',

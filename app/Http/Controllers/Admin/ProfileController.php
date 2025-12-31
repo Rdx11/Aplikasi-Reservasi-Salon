@@ -17,7 +17,7 @@ class ProfileController extends Controller
         
         return Inertia::render('Admin/Profile/Index', [
             'user' => [
-                'id' => $user->id,
+                'id' => $user->id_user,
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
@@ -32,9 +32,9 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . auth()->id(),
-            'phone' => 'nullable|string|max:20',
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email,' . auth()->user()->id_user . ',id_user',
+            'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:500',
         ]);
 

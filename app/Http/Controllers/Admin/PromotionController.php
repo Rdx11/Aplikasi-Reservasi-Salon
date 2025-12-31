@@ -22,10 +22,10 @@ class PromotionController extends Controller
             'promotions' => Promotion::with('service')->latest()->get()->map(function ($promo) {
                 $isExpired = $promo->promo_date && $promo->promo_date->lt(now()->startOfDay());
                 return [
-                    'id' => $promo->id,
+                    'id' => $promo->id_promotion,
                     'title' => $promo->title,
                     'description' => $promo->description,
-                    'service_id' => $promo->service_id,
+                    'id_service' => $promo->id_service,
                     'service' => $promo->service,
                     'discount_percentage' => $promo->discount_percentage,
                     'discount_amount' => $promo->discount_amount,
@@ -42,9 +42,9 @@ class PromotionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:150',
             'description' => 'required|string',
-            'service_id' => 'nullable|exists:services,id',
+            'id_service' => 'nullable|exists:services,id_service',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'discount_amount' => 'nullable|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
@@ -64,9 +64,9 @@ class PromotionController extends Controller
     public function update(Request $request, Promotion $promotion)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:150',
             'description' => 'required|string',
-            'service_id' => 'nullable|exists:services,id',
+            'id_service' => 'nullable|exists:services,id_service',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'discount_amount' => 'nullable|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',

@@ -10,13 +10,13 @@ skinparam class {
 ' ==================== MODELS ====================
 
 class User {
-    +id: bigint
-    +name: string
-    +email: string
-    +phone: string
+    +id_user: bigint <<PK>>
+    +name: string(100)
+    +email: string(255)
+    +phone: string(15)
     +address: text
     +password: string
-    +profile_photo: string
+    +profile_photo: string(255)
     +last_login_at: datetime
     +is_active: boolean
     +email_verified_at: datetime
@@ -28,10 +28,10 @@ class User {
 }
 
 class Category {
-    +id: bigint
-    +name: string
+    +id_category: bigint <<PK>>
+    +name: string(100)
     +description: text
-    +icon: string
+    +icon: string(50)
     +is_active: boolean
     +created_at: timestamp
     +updated_at: timestamp
@@ -40,13 +40,13 @@ class Category {
 }
 
 class Service {
-    +id: bigint
-    +category_id: bigint
-    +name: string
+    +id_service: bigint <<PK>>
+    +id_category: bigint <<FK>>
+    +name: string(100)
     +description: text
-    +price: decimal
+    +price: decimal(10,2)
     +duration: integer
-    +image: string
+    +image: string(255)
     +is_active: boolean
     +created_at: timestamp
     +updated_at: timestamp
@@ -57,13 +57,13 @@ class Service {
 }
 
 class Promotion {
-    +id: bigint
-    +title: string
+    +id_promotion: bigint <<PK>>
+    +title: string(150)
     +description: text
-    +service_id: bigint
-    +discount_percentage: decimal
-    +discount_amount: decimal
-    +image: string
+    +id_service: bigint <<FK>>
+    +discount_percentage: decimal(5,2)
+    +discount_amount: decimal(10,2)
+    +image: string(255)
     +promo_date: date
     +is_active: boolean
     +created_at: timestamp
@@ -78,18 +78,18 @@ class Promotion {
 }
 
 class Booking {
-    +id: bigint
-    +booking_code: string
-    +user_id: bigint
-    +service_id: bigint
-    +promotion_id: bigint
+    +id_booking: bigint <<PK>>
+    +booking_code: string(20)
+    +id_user: bigint <<FK>>
+    +id_service: bigint <<FK>>
+    +id_promotion: bigint <<FK>>
     +booking_date: date
     +booking_time: time
-    +status: string
+    +status: enum
     +notes: text
-    +total_price: decimal
-    +original_price: decimal
-    +payment_proof: string
+    +total_price: decimal(10,2)
+    +original_price: decimal(10,2)
+    +payment_proof: string(255)
     +payment_uploaded_at: datetime
     +created_at: timestamp
     +updated_at: timestamp
@@ -104,14 +104,14 @@ class Booking {
 }
 
 class BookingConfirmation {
-    +id: bigint
-    +booking_id: bigint
-    +confirmed_by: bigint
+    +id_booking_confirmation: bigint <<PK>>
+    +id_booking: bigint <<FK>>
+    +id_user_confirmed_by: bigint <<FK>>
     +confirmation_date: datetime
-    +payment_proof: string
-    +bank_name: string
-    +account_number: string
-    +account_name: string
+    +payment_proof: string(255)
+    +bank_name: string(50)
+    +account_number: string(25)
+    +account_name: string(100)
     +notes: text
     +created_at: timestamp
     +updated_at: timestamp
@@ -121,9 +121,9 @@ class BookingConfirmation {
 }
 
 class Cancellation {
-    +id: bigint
-    +booking_id: bigint
-    +cancelled_by: bigint
+    +id_cancellation: bigint <<PK>>
+    +id_booking: bigint <<FK>>
+    +id_user_cancelled_by: bigint <<FK>>
     +reason: text
     +cancelled_at: datetime
     +created_at: timestamp

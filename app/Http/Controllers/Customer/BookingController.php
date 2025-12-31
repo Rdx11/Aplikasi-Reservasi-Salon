@@ -15,7 +15,7 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         $query = Booking::with(['service.category'])
-            ->where('user_id', auth()->id());
+            ->where('id_user', auth()->id());
 
         // Search by booking code or service name
         if ($request->filled('search')) {
@@ -38,10 +38,10 @@ class BookingController extends Controller
             ->where('is_active', true)
             ->get()
             ->map(function ($service) {
-                $promo = Promotion::getForService($service->id, now()->toDateString());
+                $promo = Promotion::getForService($service->id_service, now()->toDateString());
                 if ($promo) {
                     $service->active_promo = [
-                        'id' => $promo->id,
+                        'id' => $promo->id_promotion,
                         'title' => $promo->title,
                         'discount_percentage' => $promo->discount_percentage,
                         'discount_amount' => $promo->discount_amount,
@@ -61,35 +61,35 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'service_id' => 'required|exists:services,id',
+            'id_service' => 'required|exists:services,id_service',
             'booking_date' => 'required|date|after_or_equal:today',
             'booking_time' => 'required',
             'notes' => 'nullable|string',
         ]);
 
-        $service = Service::findOrFail($validated['service_id']);
+        $service = Service::findOrFail($validated['id_service']);
         $bookingDate = $validated['booking_date'];
         
         // Check for active promotion on booking date
-        $promo = Promotion::getForService($service->id, $bookingDate);
+        $promo = Promotion::getForService($service->id_service, $bookingDate);
         $totalPrice = $service->price;
         $promoId = null;
         
         if ($promo) {
             $totalPrice = $promo->calculateDiscountedPrice($service->price);
-            $promoId = $promo->id;
+            $promoId = $promo->id_promotion;
         }
 
         $booking = Booking::create([
             'booking_code' => Booking::generateBookingCode(),
-            'user_id' => auth()->id(),
-            'service_id' => $validated['service_id'],
+            'id_user' => auth()->id(),
+            'id_service' => $validated['id_service'],
             'booking_date' => $bookingDate,
             'booking_time' => $validated['booking_time'],
             'notes' => $validated['notes'],
             'total_price' => $totalPrice,
             'original_price' => $service->price,
-            'promotion_id' => $promoId,
+            'id_promotion' => $promoId,
             'status' => 'pending',
         ]);
 
@@ -99,7 +99,7 @@ class BookingController extends Controller
 
     public function show(Booking $booking)
     {
-        if ($booking->user_id !== auth()->id()) {
+        if ($booking->id_user !== auth()->id()) {
             abort(403);
         }
 
@@ -110,7 +110,7 @@ class BookingController extends Controller
 
     public function cancel(Booking $booking)
     {
-        if ($booking->user_id !== auth()->id()) {
+        if ($booking->id_user !== auth()->id()) {
             abort(403);
         }
 
@@ -121,8 +121,8 @@ class BookingController extends Controller
         $booking->update(['status' => 'cancelled']);
 
         Cancellation::create([
-            'booking_id' => $booking->id,
-            'cancelled_by' => auth()->id(),
+            'id_booking' => $booking->id_booking,
+            'id_user_cancelled_by' => auth()->id(),
             'reason' => 'Dibatalkan oleh pelanggan',
             'cancelled_at' => now(),
         ]);
@@ -132,7 +132,7 @@ class BookingController extends Controller
 
     public function uploadPayment(Request $request, Booking $booking)
     {
-        if ($booking->user_id !== auth()->id()) {
+        if ($booking->id_user !== auth()->id()) {
             abort(403);
         }
 

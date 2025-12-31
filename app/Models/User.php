@@ -14,6 +14,19 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasRoles;
 
     /**
+     * The primary key for the model.
+     */
+    protected $primaryKey = 'id_user';
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'id_user';
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

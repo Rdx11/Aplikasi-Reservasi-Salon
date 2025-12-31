@@ -11,8 +11,21 @@ class Service extends Model
 {
     use HasFactory;
 
+    /**
+     * The primary key for the model.
+     */
+    protected $primaryKey = 'id_service';
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'id_service';
+    }
+
     protected $fillable = [
-        'category_id',
+        'id_category',
         'name',
         'description',
         'price',
@@ -29,16 +42,16 @@ class Service extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'id_category');
     }
 
     public function bookings(): HasMany
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Booking::class, 'id_service');
     }
 
     public function promotions(): HasMany
     {
-        return $this->hasMany(Promotion::class);
+        return $this->hasMany(Promotion::class, 'id_service');
     }
 }

@@ -10,9 +10,22 @@ class BookingConfirmation extends Model
 {
     use HasFactory;
 
+    /**
+     * The primary key for the model.
+     */
+    protected $primaryKey = 'id_booking_confirmation';
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'id_booking_confirmation';
+    }
+
     protected $fillable = [
-        'booking_id',
-        'confirmed_by',
+        'id_booking',
+        'id_user_confirmed_by',
         'confirmation_date',
         'payment_proof',
         'bank_name',
@@ -27,11 +40,11 @@ class BookingConfirmation extends Model
 
     public function booking(): BelongsTo
     {
-        return $this->belongsTo(Booking::class);
+        return $this->belongsTo(Booking::class, 'id_booking');
     }
 
     public function confirmedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'confirmed_by');
+        return $this->belongsTo(User::class, 'id_user_confirmed_by');
     }
 }

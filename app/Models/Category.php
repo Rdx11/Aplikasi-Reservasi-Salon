@@ -10,6 +10,19 @@ class Category extends Model
 {
     use HasFactory;
 
+    /**
+     * The primary key for the model.
+     */
+    protected $primaryKey = 'id_category';
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'id_category';
+    }
+
     protected $fillable = [
         'name',
         'description',
@@ -23,6 +36,6 @@ class Category extends Model
 
     public function services(): HasMany
     {
-        return $this->hasMany(Service::class);
+        return $this->hasMany(Service::class, 'id_category');
     }
 }

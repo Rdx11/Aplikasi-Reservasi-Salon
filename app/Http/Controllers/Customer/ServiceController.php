@@ -21,10 +21,10 @@ class ServiceController extends Controller
                 $service->image_url = $service->image ? asset('storage/' . $service->image) : null;
                 
                 // Check for active promo today
-                $promo = Promotion::getForService($service->id, $today);
+                $promo = Promotion::getForService($service->id_service, $today);
                 if ($promo) {
                     $service->active_promo = [
-                        'id' => $promo->id,
+                        'id' => $promo->id_promotion,
                         'title' => $promo->title,
                         'discount_percentage' => $promo->discount_percentage,
                         'discount_amount' => $promo->discount_amount,
@@ -49,10 +49,10 @@ class ServiceController extends Controller
         $service->image_url = $service->image ? asset('storage/' . $service->image) : null;
         
         // Check for active promo today
-        $promo = Promotion::getForService($service->id, $today);
+        $promo = Promotion::getForService($service->id_service, $today);
         if ($promo) {
             $service->active_promo = [
-                'id' => $promo->id,
+                'id' => $promo->id_promotion,
                 'title' => $promo->title,
                 'discount_percentage' => $promo->discount_percentage,
                 'discount_amount' => $promo->discount_amount,
@@ -60,8 +60,8 @@ class ServiceController extends Controller
             ];
         }
 
-        $relatedServices = Service::where('category_id', $service->category_id)
-            ->where('id', '!=', $service->id)
+        $relatedServices = Service::where('id_category', $service->id_category)
+            ->where('id_service', '!=', $service->id_service)
             ->where('is_active', true)
             ->take(4)
             ->get()
@@ -69,10 +69,10 @@ class ServiceController extends Controller
                 $s->image_url = $s->image ? asset('storage/' . $s->image) : null;
                 
                 // Check for active promo today
-                $promo = Promotion::getForService($s->id, $today);
+                $promo = Promotion::getForService($s->id_service, $today);
                 if ($promo) {
                     $s->active_promo = [
-                        'id' => $promo->id,
+                        'id' => $promo->id_promotion,
                         'title' => $promo->title,
                         'discount_percentage' => $promo->discount_percentage,
                         'discount_amount' => $promo->discount_amount,

@@ -49,8 +49,8 @@ class BookingController extends Controller
         $booking->update(['status' => 'confirmed']);
 
         BookingConfirmation::create([
-            'booking_id' => $booking->id,
-            'confirmed_by' => auth()->id(),
+            'id_booking' => $booking->id_booking,
+            'id_user_confirmed_by' => auth()->id(),
             'confirmation_date' => now(),
         ]);
 
@@ -66,8 +66,8 @@ class BookingController extends Controller
         $booking->update(['status' => 'cancelled']);
 
         Cancellation::create([
-            'booking_id' => $booking->id,
-            'cancelled_by' => auth()->id(),
+            'id_booking' => $booking->id_booking,
+            'id_user_cancelled_by' => auth()->id(),
             'reason' => $request->input('reason', 'Dibatalkan oleh admin'),
             'cancelled_at' => now(),
         ]);

@@ -34,7 +34,7 @@ class NotificationController extends Controller
         return response()->json([
             'bookings' => $newBookings->map(function ($booking) {
                 return [
-                    'id' => $booking->id,
+                    'id' => $booking->id_booking,
                     'booking_code' => $booking->booking_code,
                     'customer_name' => $booking->user->name ?? 'Unknown',
                     'service_name' => $booking->service->name ?? 'Unknown',

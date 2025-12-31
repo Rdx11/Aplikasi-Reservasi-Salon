@@ -13,21 +13,21 @@ class DashboardController extends Controller
         $userId = auth()->id();
 
         $stats = [
-            'totalBookings' => Booking::where('user_id', $userId)->count(),
-            'completedBookings' => Booking::where('user_id', $userId)->where('status', 'completed')->count(),
-            'pendingBookings' => Booking::where('user_id', $userId)->where('status', 'pending')->count(),
-            'cancelledBookings' => Booking::where('user_id', $userId)->where('status', 'cancelled')->count(),
-            'totalSpent' => Booking::where('user_id', $userId)->where('status', 'completed')->sum('total_price'),
+            'totalBookings' => Booking::where('id_user', $userId)->count(),
+            'completedBookings' => Booking::where('id_user', $userId)->where('status', 'completed')->count(),
+            'pendingBookings' => Booking::where('id_user', $userId)->where('status', 'pending')->count(),
+            'cancelledBookings' => Booking::where('id_user', $userId)->where('status', 'cancelled')->count(),
+            'totalSpent' => Booking::where('id_user', $userId)->where('status', 'completed')->sum('total_price'),
         ];
 
         $recentBookings = Booking::with(['service.category'])
-            ->where('user_id', $userId)
+            ->where('id_user', $userId)
             ->latest()
             ->take(5)
             ->get();
 
         $upcomingBookings = Booking::with(['service.category'])
-            ->where('user_id', $userId)
+            ->where('id_user', $userId)
             ->whereIn('status', ['pending', 'confirmed'])
             ->where('booking_date', '>=', now()->toDateString())
             ->orderBy('booking_date')

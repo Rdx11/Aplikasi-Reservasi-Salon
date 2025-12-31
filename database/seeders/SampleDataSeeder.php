@@ -29,19 +29,19 @@ class SampleDataSeeder extends Seeder
         // Services
         $services = [
             // Rambut
-            ['category_id' => 1, 'name' => 'Potong Rambut Wanita', 'description' => 'Potong rambut dengan styling profesional', 'price' => 75000, 'duration' => 45],
-            ['category_id' => 1, 'name' => 'Hair Coloring', 'description' => 'Pewarnaan rambut dengan produk premium', 'price' => 350000, 'duration' => 120],
-            ['category_id' => 1, 'name' => 'Hair Treatment', 'description' => 'Perawatan rambut intensif untuk rambut sehat berkilau', 'price' => 200000, 'duration' => 60],
-            ['category_id' => 1, 'name' => 'Smoothing', 'description' => 'Treatment smoothing untuk rambut lurus dan halus', 'price' => 500000, 'duration' => 180],
-            ['category_id' => 1, 'name' => 'Blow Dry & Styling', 'description' => 'Blow dry dan styling untuk acara spesial', 'price' => 100000, 'duration' => 45],
+            ['id_category' => 1, 'name' => 'Potong Rambut Wanita', 'description' => 'Potong rambut dengan styling profesional', 'price' => 75000, 'duration' => 45],
+            ['id_category' => 1, 'name' => 'Hair Coloring', 'description' => 'Pewarnaan rambut dengan produk premium', 'price' => 350000, 'duration' => 120],
+            ['id_category' => 1, 'name' => 'Hair Treatment', 'description' => 'Perawatan rambut intensif untuk rambut sehat berkilau', 'price' => 200000, 'duration' => 60],
+            ['id_category' => 1, 'name' => 'Smoothing', 'description' => 'Treatment smoothing untuk rambut lurus dan halus', 'price' => 500000, 'duration' => 180],
+            ['id_category' => 1, 'name' => 'Blow Dry & Styling', 'description' => 'Blow dry dan styling untuk acara spesial', 'price' => 100000, 'duration' => 45],
             // Wajah
-            ['category_id' => 2, 'name' => 'Facial Basic', 'description' => 'Facial dasar untuk kulit bersih dan segar', 'price' => 150000, 'duration' => 60],
-            ['category_id' => 2, 'name' => 'Facial Premium', 'description' => 'Facial premium dengan produk high-end', 'price' => 300000, 'duration' => 90],
-            ['category_id' => 2, 'name' => 'Acne Treatment', 'description' => 'Treatment khusus untuk kulit berjerawat', 'price' => 250000, 'duration' => 75],
+            ['id_category' => 2, 'name' => 'Facial Basic', 'description' => 'Facial dasar untuk kulit bersih dan segar', 'price' => 150000, 'duration' => 60],
+            ['id_category' => 2, 'name' => 'Facial Premium', 'description' => 'Facial premium dengan produk high-end', 'price' => 300000, 'duration' => 90],
+            ['id_category' => 2, 'name' => 'Acne Treatment', 'description' => 'Treatment khusus untuk kulit berjerawat', 'price' => 250000, 'duration' => 75],
             // Tubuh
-            ['category_id' => 3, 'name' => 'Body Massage', 'description' => 'Pijat relaksasi seluruh tubuh', 'price' => 200000, 'duration' => 60],
-            ['category_id' => 3, 'name' => 'Body Scrub', 'description' => 'Scrub tubuh untuk kulit halus dan cerah', 'price' => 175000, 'duration' => 45],
-            ['category_id' => 3, 'name' => 'Manicure & Pedicure', 'description' => 'Perawatan kuku tangan dan kaki', 'price' => 150000, 'duration' => 60],
+            ['id_category' => 3, 'name' => 'Body Massage', 'description' => 'Pijat relaksasi seluruh tubuh', 'price' => 200000, 'duration' => 60],
+            ['id_category' => 3, 'name' => 'Body Scrub', 'description' => 'Scrub tubuh untuk kulit halus dan cerah', 'price' => 175000, 'duration' => 45],
+            ['id_category' => 3, 'name' => 'Manicure & Pedicure', 'description' => 'Perawatan kuku tangan dan kaki', 'price' => 150000, 'duration' => 60],
         ];
 
         foreach ($services as $service) {
@@ -53,7 +53,7 @@ class SampleDataSeeder extends Seeder
             'title' => 'Diskon 30% Hair Treatment',
             'description' => 'Khusus hari ini! Dapatkan diskon 30% untuk semua layanan hair treatment',
             'discount_percentage' => 30,
-            'service_id' => 3, // Hair Treatment
+            'id_service' => 3, // Hair Treatment
             'promo_date' => now()->toDateString(),
             'is_active' => true,
         ]);
@@ -62,7 +62,7 @@ class SampleDataSeeder extends Seeder
             'title' => 'Diskon 20% Facial Basic',
             'description' => 'Promo spesial hari ini untuk facial basic',
             'discount_percentage' => 20,
-            'service_id' => 6, // Facial Basic
+            'id_service' => 6, // Facial Basic
             'promo_date' => now()->toDateString(),
             'is_active' => true,
         ]);
@@ -119,8 +119,8 @@ class SampleDataSeeder extends Seeder
 
                 Booking::create([
                     'booking_code' => 'BK' . $bookingDate->format('Ymd') . strtoupper(substr(uniqid(), -4)),
-                    'user_id' => $customer->id,
-                    'service_id' => $service->id,
+                    'id_user' => $customer->id_user,
+                    'id_service' => $service->id_service,
                     'booking_date' => $bookingDate,
                     'booking_time' => $times[array_rand($times)],
                     'status' => $status,
