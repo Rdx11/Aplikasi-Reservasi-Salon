@@ -27,6 +27,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the name of the unique identifier for the user (for session).
+     */
+    public function getAuthIdentifierName(): string
+    {
+        return 'id_user';
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

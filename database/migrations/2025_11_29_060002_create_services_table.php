@@ -12,15 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('services', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->string('name');
+            $table->id('id_service');
+            $table->unsignedBigInteger('id_category');
+            $table->string('name', 100);
             $table->text('description');
             $table->decimal('price', 10, 2);
             $table->integer('duration'); // dalam menit
-            $table->string('image')->nullable();
+            $table->string('image', 255)->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+
+            $table->foreign('id_category')->references('id_category')->on('categories')->onDelete('cascade');
         });
     }
 

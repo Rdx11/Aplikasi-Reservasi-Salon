@@ -12,16 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('booking_confirmations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('booking_id')->unique()->constrained()->onDelete('cascade');
-            $table->foreignId('confirmed_by')->constrained('users')->onDelete('cascade');
+            $table->id('id_booking_confirmation');
+            $table->unsignedBigInteger('id_booking')->unique();
+            $table->unsignedBigInteger('id_user_confirmed_by');
             $table->timestamp('confirmation_date');
-            $table->string('payment_proof')->nullable();
-            $table->string('bank_name')->nullable();
-            $table->string('account_number')->nullable();
-            $table->string('account_name')->nullable();
+            $table->string('payment_proof', 255)->nullable();
+            $table->string('bank_name', 50)->nullable();
+            $table->string('account_number', 25)->nullable();
+            $table->string('account_name', 100)->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
+
+            $table->foreign('id_booking')->references('id_booking')->on('bookings')->onDelete('cascade');
+            $table->foreign('id_user_confirmed_by')->references('id_user')->on('users')->onDelete('cascade');
         });
     }
 

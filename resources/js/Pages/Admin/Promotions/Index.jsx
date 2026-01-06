@@ -21,7 +21,7 @@ export default function PromotionsIndex({ promotions = [], services = [] }) {
     };
 
     const columns = [
-        { key: 'id', label: 'ID' },
+        { key: 'id_promotion', label: 'ID' },
         { key: 'title', label: 'Judul' },
         {
             key: 'service',
@@ -82,7 +82,7 @@ export default function PromotionsIndex({ promotions = [], services = [] }) {
     };
 
     const confirmDelete = () => {
-        router.delete(`/admin/promotions/${selected.id}`, {
+        router.delete(`/admin/promotions/${selected.id_promotion}`, {
             onSuccess: () => setShowDelete(false),
         });
     };

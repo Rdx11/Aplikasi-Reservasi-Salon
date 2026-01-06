@@ -12,12 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cancellations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('booking_id')->constrained()->onDelete('cascade');
-            $table->foreignId('cancelled_by')->constrained('users')->onDelete('cascade');
+            $table->id('id_cancellation');
+            $table->unsignedBigInteger('id_booking');
+            $table->unsignedBigInteger('id_user_cancelled_by');
             $table->text('reason');
             $table->timestamp('cancelled_at');
             $table->timestamps();
+
+            $table->foreign('id_booking')->references('id_booking')->on('bookings')->onDelete('cascade');
+            $table->foreign('id_user_cancelled_by')->references('id_user')->on('users')->onDelete('cascade');
         });
     }
 

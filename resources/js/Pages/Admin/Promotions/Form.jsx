@@ -11,7 +11,7 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
     const { data, setData, post, processing, errors } = useForm({
         title: promotion?.title || '',
         description: promotion?.description || '',
-        service_id: promotion?.service_id || '',
+        id_service: promotion?.id_service || '',
         discount_percentage: promotion?.discount_percentage || '',
         image: null,
         promo_date: promotion?.promo_date || '',
@@ -43,11 +43,11 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
         
         if (promotion) {
             // Update - use router.post with _method spoofing
-            router.post(`/admin/promotions/${promotion.id}`, {
+            router.post(`/admin/promotions/${promotion.id_promotion}`, {
                 _method: 'PUT',
                 title: data.title,
                 description: data.description,
-                service_id: data.service_id || '',
+                id_service: data.id_service || '',
                 discount_percentage: data.discount_percentage || '',
                 promo_date: data.promo_date,
                 is_active: data.is_active ? '1' : '0',
@@ -68,7 +68,7 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
 
     const serviceOptions = [
         { value: '', label: 'Semua Layanan' },
-        ...services.map((s) => ({ value: s.id, label: s.name })),
+        ...services.map((s) => ({ value: s.id_service, label: s.name })),
     ];
 
     return (
@@ -93,9 +93,9 @@ export default function PromotionForm({ promotion, services = [], onSuccess }) {
             <Select
                 label="Layanan (opsional)"
                 options={serviceOptions}
-                value={data.service_id}
-                onChange={(e) => setData('service_id', e.target.value)}
-                error={errors.service_id}
+                value={data.id_service}
+                onChange={(e) => setData('id_service', e.target.value)}
+                error={errors.id_service}
             />
 
             <Input

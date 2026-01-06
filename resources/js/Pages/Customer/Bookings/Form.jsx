@@ -4,7 +4,7 @@ import { Tag } from 'lucide-react';
 
 export default function BookingForm({ services = [], onSuccess }) {
     const { data, setData, post, processing, errors } = useForm({
-        service_id: '',
+        id_service: '',
         booking_date: new Date().toISOString().split('T')[0], // Default hari ini
         booking_time: '',
         notes: '',
@@ -20,7 +20,7 @@ export default function BookingForm({ services = [], onSuccess }) {
     const serviceOptions = services.map((s) => {
         const hasPromo = s.active_promo && isPromoValidForDate(s.active_promo, data.booking_date);
         return {
-            value: s.id,
+            value: s.id_service,
             label: hasPromo
                 ? `${s.name} - ${formatPrice(s.active_promo.discounted_price)} (PROMO!) - ${s.duration} menit`
                 : `${s.name} - ${formatPrice(s.price)} - ${s.duration} menit`,
@@ -41,7 +41,7 @@ export default function BookingForm({ services = [], onSuccess }) {
         '19:00', '19:30', '20:00',
     ].map((t) => ({ value: t, label: t }));
 
-    const selectedService = services.find((s) => s.id == data.service_id);
+    const selectedService = services.find((s) => s.id_service == data.id_service);
     const hasActivePromo = selectedService?.active_promo && isPromoValidForDate(selectedService.active_promo, data.booking_date);
 
     return (
@@ -50,9 +50,9 @@ export default function BookingForm({ services = [], onSuccess }) {
                 label="Pilih Layanan"
                 placeholder="Pilih layanan..."
                 options={serviceOptions}
-                value={data.service_id}
-                onChange={(e) => setData('service_id', e.target.value)}
-                error={errors.service_id}
+                value={data.id_service}
+                onChange={(e) => setData('id_service', e.target.value)}
+                error={errors.id_service}
             />
 
             {selectedService && (

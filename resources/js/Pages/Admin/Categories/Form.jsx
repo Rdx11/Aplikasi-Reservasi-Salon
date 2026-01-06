@@ -12,7 +12,7 @@ export default function CategoryForm({ category, onSuccess }) {
     const submit = (e) => {
         e.preventDefault();
         if (category) {
-            put(`/admin/categories/${category.id}`, { onSuccess });
+            put(`/admin/categories/${category.id_category}`, { onSuccess });
         } else {
             post('/admin/categories', { onSuccess });
         }

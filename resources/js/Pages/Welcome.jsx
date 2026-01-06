@@ -155,8 +155,8 @@ function PromotionsSection({ promotions, auth }) {
             return '/admin/bookings';
         }
         // If promo has specific service, go to that service page
-        if (promo.service_id) {
-            return `/customer/services/${promo.service_id}`;
+        if (promo.id_service) {
+            return `/customer/services/${promo.id_service}`;
         }
         // Otherwise go to services page with promo filter
         return '/customer/services';

@@ -74,13 +74,13 @@ export default function BookingsIndex({ bookings = {}, filters = {} }) {
     };
 
     const confirmBooking = () => {
-        router.post(`/admin/bookings/${selected.id}/confirm`, {}, {
+        router.post(`/admin/bookings/${selected.id_booking}/confirm`, {}, {
             onSuccess: () => setShowConfirm(false),
         });
     };
 
     const cancelBooking = () => {
-        router.post(`/admin/bookings/${selected.id}/cancel`, {}, {
+        router.post(`/admin/bookings/${selected.id_booking}/cancel`, {}, {
             onSuccess: () => setShowCancel(false),
         });
     };
@@ -91,7 +91,7 @@ export default function BookingsIndex({ bookings = {}, filters = {} }) {
     };
 
     const completeBooking = () => {
-        router.post(`/admin/bookings/${selected.id}/complete`, {}, {
+        router.post(`/admin/bookings/${selected.id_booking}/complete`, {}, {
             onSuccess: () => setShowComplete(false),
         });
     };

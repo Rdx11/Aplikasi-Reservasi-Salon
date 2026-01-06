@@ -14,7 +14,7 @@ export default function UsersIndex({ users = [], roles = [] }) {
     const [selected, setSelected] = useState(null);
 
     const columns = [
-        { key: 'id', label: 'ID' },
+        { key: 'id_user', label: 'ID' },
         { key: 'name', label: 'Nama' },
         { key: 'email', label: 'Email' },
         { key: 'phone', label: 'Telepon', render: (val) => val || '-' },
@@ -54,7 +54,7 @@ export default function UsersIndex({ users = [], roles = [] }) {
     };
 
     const confirmDelete = () => {
-        router.delete(`/admin/users/${selected.id}`, {
+        router.delete(`/admin/users/${selected.id_user}`, {
             onSuccess: () => setShowDelete(false),
         });
     };

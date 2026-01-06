@@ -13,7 +13,7 @@ export default function CategoriesIndex({ categories = [] }) {
     const [selected, setSelected] = useState(null);
 
     const columns = [
-        { key: 'id', label: 'ID' },
+        { key: 'id_category', label: 'ID' },
         { key: 'name', label: 'Nama' },
         { key: 'description', label: 'Deskripsi', render: (val) => val || '-' },
         {
@@ -38,7 +38,7 @@ export default function CategoriesIndex({ categories = [] }) {
     };
 
     const confirmDelete = () => {
-        router.delete(`/admin/categories/${selected.id}`, {
+        router.delete(`/admin/categories/${selected.id_category}`, {
             onSuccess: () => setShowDelete(false),
         });
     };

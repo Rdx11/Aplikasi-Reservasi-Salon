@@ -10,7 +10,7 @@ export default function ServiceForm({ service, categories = [], onSuccess }) {
     const [errors, setErrors] = useState({});
 
     const [data, setData] = useState({
-        category_id: service?.category_id || '',
+        id_category: service?.id_category || '',
         name: service?.name || '',
         description: service?.description || '',
         price: service?.price || '',
@@ -30,7 +30,7 @@ export default function ServiceForm({ service, categories = [], onSuccess }) {
         setErrors({});
 
         const formData = new FormData();
-        formData.append('category_id', data.category_id);
+        formData.append('id_category', data.id_category);
         formData.append('name', data.name);
         formData.append('description', data.description);
         formData.append('price', data.price);
@@ -46,7 +46,7 @@ export default function ServiceForm({ service, categories = [], onSuccess }) {
         if (service) {
             // For update, use POST with _method spoofing
             formData.append('_method', 'PUT');
-            router.post(`/admin/services/${service.id}`, formData, {
+            router.post(`/admin/services/${service.id_service}`, formData, {
                 forceFormData: true,
                 onSuccess: () => {
                     setProcessing(false);
@@ -92,7 +92,7 @@ export default function ServiceForm({ service, categories = [], onSuccess }) {
     };
 
     const categoryOptions = categories.map((cat) => ({
-        value: cat.id,
+        value: cat.id_category,
         label: cat.name,
     }));
 
@@ -102,9 +102,9 @@ export default function ServiceForm({ service, categories = [], onSuccess }) {
                 label="Kategori"
                 placeholder="Pilih kategori"
                 options={categoryOptions}
-                value={data.category_id}
-                onChange={(e) => handleChange('category_id', e.target.value)}
-                error={errors.category_id}
+                value={data.id_category}
+                onChange={(e) => handleChange('id_category', e.target.value)}
+                error={errors.id_category}
             />
 
             <Input

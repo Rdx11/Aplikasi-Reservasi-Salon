@@ -47,7 +47,7 @@ export default function CustomerBookingsIndex({ bookings = {}, services = [], fi
     };
 
     const confirmCancel = () => {
-        router.post(`/customer/bookings/${selected.id}/cancel`, {}, {
+        router.post(`/customer/bookings/${selected.id_booking}/cancel`, {}, {
             onSuccess: () => setShowCancel(false),
         });
     };
@@ -173,7 +173,7 @@ export default function CustomerBookingsIndex({ bookings = {}, services = [], fi
                                             </div>
                                             <div className="flex gap-2">
                                                 <Link
-                                                    href={`/customer/bookings/${booking.id}`}
+                                                    href={`/customer/bookings/${booking.id_booking}`}
                                                     className="p-2 text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition"
                                                 >
                                                     <Eye className="w-5 h-5" />

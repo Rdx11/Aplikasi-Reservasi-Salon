@@ -16,7 +16,7 @@ export default function UserForm({ user, roles = [], onSuccess }) {
     const submit = (e) => {
         e.preventDefault();
         if (user) {
-            put(`/admin/users/${user.id}`, { onSuccess });
+            put(`/admin/users/${user.id_user}`, { onSuccess });
         } else {
             post('/admin/users', { onSuccess });
         }

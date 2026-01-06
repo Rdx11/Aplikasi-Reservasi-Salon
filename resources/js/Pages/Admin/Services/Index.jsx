@@ -15,7 +15,7 @@ export default function ServicesIndex({ services = [], categories = [] }) {
     const formatPrice = (price) => `Rp ${new Intl.NumberFormat('id-ID').format(price)}`;
 
     const columns = [
-        { key: 'id', label: 'ID' },
+        { key: 'id_service', label: 'ID' },
         { key: 'name', label: 'Nama Layanan' },
         { key: 'category', label: 'Kategori', render: (_, item) => item.category?.name || '-' },
         { key: 'price', label: 'Harga', render: formatPrice },
@@ -42,7 +42,7 @@ export default function ServicesIndex({ services = [], categories = [] }) {
     };
 
     const confirmDelete = () => {
-        router.delete(`/admin/services/${selected.id}`, {
+        router.delete(`/admin/services/${selected.id_service}`, {
             onSuccess: () => setShowDelete(false),
         });
     };

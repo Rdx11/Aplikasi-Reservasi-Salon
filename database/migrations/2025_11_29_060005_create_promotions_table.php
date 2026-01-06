@@ -12,16 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('promotions', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
+            $table->id('id_promotion');
+            $table->string('title', 150);
             $table->text('description');
-            $table->foreignId('service_id')->nullable()->constrained()->onDelete('set null');
+            $table->unsignedBigInteger('id_service')->nullable();
             $table->decimal('discount_percentage', 5, 2)->nullable();
             $table->decimal('discount_amount', 10, 2)->nullable();
-            $table->string('image')->nullable();
+            $table->string('image', 255)->nullable();
             $table->date('promo_date');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+
+            $table->foreign('id_service')->references('id_service')->on('services')->onDelete('set null');
         });
     }
 

@@ -123,8 +123,8 @@ export default function CustomerServiceShow({ service, relatedServices = [] }) {
                         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             {relatedServices.map((related) => (
                                 <Link
-                                    key={related.id}
-                                    href={`/customer/services/${related.id}`}
+                                    key={related.id_service}
+                                    href={`/customer/services/${related.id_service}`}
                                     className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md hover:border-primary-200 transition relative"
                                 >
                                     {related.active_promo && (
@@ -162,7 +162,7 @@ export default function CustomerServiceShow({ service, relatedServices = [] }) {
 
 function BookingModal({ isOpen, onClose, service }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        service_id: service.id,
+        id_service: service.id_service,
         booking_date: new Date().toISOString().split('T')[0], // Default hari ini
         booking_time: '',
         notes: '',

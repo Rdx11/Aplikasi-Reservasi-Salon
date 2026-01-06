@@ -20,7 +20,7 @@ export default function CustomerServicesIndex({ categories = [], services = [] }
     const filteredServices = services.filter((service) => {
         const matchSearch = service.name.toLowerCase().includes(search.toLowerCase()) ||
             service.description?.toLowerCase().includes(search.toLowerCase());
-        const matchCategory = selectedCategory === 'all' || service.category_id == selectedCategory;
+        const matchCategory = selectedCategory === 'all' || service.id_category == selectedCategory;
         const matchPromo = !showPromoOnly || service.active_promo;
         return matchSearch && matchCategory && matchPromo;
     });
@@ -85,10 +85,10 @@ export default function CustomerServicesIndex({ categories = [], services = [] }
                         </button>
                         {categories.map((cat) => (
                             <button
-                                key={cat.id}
-                                onClick={() => setSelectedCategory(cat.id)}
+                                key={cat.id_category}
+                                onClick={() => setSelectedCategory(cat.id_category)}
                                 className={`px-4 py-2 rounded-xl font-medium whitespace-nowrap transition ${
-                                    selectedCategory === cat.id
+                                    selectedCategory === cat.id_category
                                         ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/25'
                                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                 }`}
@@ -136,7 +136,7 @@ export default function CustomerServicesIndex({ categories = [], services = [] }
                         >
                             {filteredServices.map((service, index) => (
                                 <ServiceCard 
-                                    key={service.id} 
+                                    key={service.id_service} 
                                     service={service} 
                                     index={index}
                                     formatPrice={formatPrice}
@@ -163,7 +163,7 @@ function ServiceCard({ service, index, formatPrice }) {
                     transition={{ delay: Math.min(index * 0.05, 0.3) }}
                 >
                     <Link
-                        href={`/customer/services/${service.id}`}
+                        href={`/customer/services/${service.id_service}`}
                         className="block bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg hover:border-primary-200 transition-all group"
                     >
                         <div className="aspect-video bg-gradient-to-br from-primary-100 to-primary-200 relative overflow-hidden">
