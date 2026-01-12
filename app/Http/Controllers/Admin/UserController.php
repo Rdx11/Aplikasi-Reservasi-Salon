@@ -14,9 +14,20 @@ class UserController extends Controller
 {
     public function index()
     {
+        // Exclude Admin users from the list to prevent accidental deletion
+        $users = User::with('roles')
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'Admin');
+            })
+            ->latest()
+            ->get();
+
+        // Exclude Admin role from available roles
+        $roles = Role::where('name', '!=', 'Admin')->get();
+
         return Inertia::render('Admin/Users/Index', [
-            'users' => User::with('roles')->latest()->get(),
-            'roles' => Role::all(),
+            'users' => $users,
+            'roles' => $roles,
         ]);
     }
 

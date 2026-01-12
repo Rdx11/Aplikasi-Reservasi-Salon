@@ -9,10 +9,15 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\PublicServiceController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
+
+// Public Services (tanpa login)
+Route::get('/services', [PublicServiceController::class, 'index'])->name('services.index');
+Route::get('/services/{service}', [PublicServiceController::class, 'show'])->name('services.show');
 
 // Auth Routes
 Route::middleware('guest')->group(function () {

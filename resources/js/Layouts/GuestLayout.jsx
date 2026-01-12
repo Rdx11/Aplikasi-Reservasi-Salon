@@ -41,7 +41,7 @@ function Navbar() {
                         <span className="text-xl font-bold text-gradient">Rasta Salon</span>
                     </Link>
                     <div className="hidden md:flex items-center gap-8">
-                        <NavLink href="/#services">Layanan</NavLink>
+                        <NavLink href="/services">Layanan</NavLink>
                         <NavLink href="/#promotions">Promo</NavLink>
                         <NavLink href="/#about">Tentang</NavLink>
                         <NavLink href="/#contact">Kontak</NavLink>

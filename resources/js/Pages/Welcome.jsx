@@ -1,17 +1,17 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { Scissors, Sparkles, Heart, Star, Clock, Shield, ArrowRight, Calendar, Tag } from 'lucide-react';
+import { Sparkles, Star, Clock, Shield, Heart, ArrowRight, Calendar, Tag } from 'lucide-react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Button } from '@/Components/UI';
 
 export default function Welcome({ categories = [], services = [], promotions = [] }) {
     const { auth } = usePage().props;
-    
+
     return (
         <GuestLayout>
             <Head title="Selamat Datang" />
             <HeroSection auth={auth} />
-            <ServicesSection categories={categories} services={services} />
+            <ServicesSection services={services} />
             <PromotionsSection promotions={promotions} auth={auth} />
             <WhyUsSection />
             <CTASection auth={auth} />
@@ -22,13 +22,13 @@ export default function Welcome({ categories = [], services = [], promotions = [
 function HeroSection({ auth }) {
     const isAdmin = auth?.user?.roles?.includes('Admin');
     const bookingUrl = !auth?.user ? '/login' : (isAdmin ? '/admin/bookings' : '/customer/bookings');
-    
+
     return (
         <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-gold-50" />
             <div className="absolute top-20 right-0 w-96 h-96 bg-primary-200 rounded-full blur-3xl opacity-30" />
             <div className="absolute bottom-20 left-0 w-96 h-96 bg-gold-200 rounded-full blur-3xl opacity-30" />
-            
+
             <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
                     <motion.div
@@ -42,18 +42,18 @@ function HeroSection({ auth }) {
                             <span>Salon Kecantikan Terpercaya</span>
                         </div>
                         <h1 className="text-5xl lg:text-6xl font-serif font-bold text-gray-900 leading-tight">
-                            Tampil Cantik &<br />
+                            Tampil Mempesona &<br />
                             <span className="text-gradient">Percaya Diri</span>
                         </h1>
                         <p className="text-xl text-gray-600 leading-relaxed">
-                            Nikmati pengalaman perawatan kecantikan terbaik dengan layanan profesional 
+                            Nikmati pengalaman perawatan kecantikan terbaik dengan layanan profesional
                             dan produk berkualitas di Rasta Salon.
                         </p>
                         <div className="flex flex-wrap gap-4">
                             <Button size="lg" icon={Calendar} href={bookingUrl}>
                                 Booking Sekarang
                             </Button>
-                            <Button variant="outline" size="lg" href="#services">
+                            <Button variant="outline" size="lg" href="/services">
                                 Lihat Layanan
                             </Button>
                         </div>
@@ -73,7 +73,7 @@ function HeroSection({ auth }) {
                             <div className="absolute inset-0 bg-gray-200 rounded-3xl rotate-6 opacity-20" />
                             <div className="absolute inset-0 rounded-3xl overflow-hidden shadow-xl">
                                 <img
-                                    src="/storage/banner/banner-1.jpg"
+                                    src="/storage/banner/banner-2.jpeg"
                                     alt="Rasta Salon"
                                     className="w-full h-full object-cover"
                                 />
@@ -98,7 +98,9 @@ function Stat({ value, label, icon: Icon }) {
     );
 }
 
-function ServicesSection({ categories, services }) {
+function ServicesSection({ services }) {
+    const formatPrice = (price) => `Rp ${new Intl.NumberFormat('id-ID').format(price)}`;
+
     return (
         <section id="services" className="py-24 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -116,36 +118,70 @@ function ServicesSection({ categories, services }) {
                     </p>
                 </motion.div>
                 <div className="grid md:grid-cols-3 gap-8">
-                    {(categories.length > 0 ? categories : defaultCategories).map((category, index) => (
+                    {services.map((service, index) => (
                         <motion.div
-                            key={category.id || index}
+                            key={service.id}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="group bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300"
+                            className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
                         >
-                            <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <category.icon className="w-8 h-8 text-white" />
+                            {/* Image */}
+                            <div className="aspect-video bg-gradient-to-br from-primary-100 to-primary-200 relative overflow-hidden">
+                                {service.image ? (
+                                    <img
+                                        src={service.image}
+                                        alt={service.name}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <Sparkles className="w-16 h-16 text-primary-300" />
+                                    </div>
+                                )}
+                                {service.category && (
+                                    <span className="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-primary-600">
+                                        {service.category.name}
+                                    </span>
+                                )}
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-3">{category.name}</h3>
-                            <p className="text-gray-600 mb-4">{category.description}</p>
-                            <a href="#" className="inline-flex items-center gap-2 text-primary-600 font-medium hover:gap-3 transition-all">
-                                Lihat Detail <ArrowRight className="w-4 h-4" />
-                            </a>
+                            {/* Content */}
+                            <div className="p-6">
+                                <h3 className="text-xl font-semibold text-gray-900 mb-2">{service.name}</h3>
+                                <p className="text-gray-600 mb-4 line-clamp-2">{service.description}</p>
+                                <div className="flex items-center justify-between mb-4">
+                                    <span className="text-lg font-bold text-primary-600">{formatPrice(service.price)}</span>
+                                    <span className="flex items-center gap-1 text-sm text-gray-500">
+                                        <Clock className="w-4 h-4" />
+                                        {service.duration} menit
+                                    </span>
+                                </div>
+                                <Link 
+                                    href={`/services/${service.id}`} 
+                                    className="inline-flex items-center gap-2 text-primary-600 font-medium hover:gap-3 transition-all"
+                                >
+                                    Lihat Detail <ArrowRight className="w-4 h-4" />
+                                </Link>
+                            </div>
                         </motion.div>
                     ))}
                 </div>
+                {/* View All Button */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="text-center mt-12"
+                >
+                    <Button variant="outline" size="lg" href="/services">
+                        Lihat Semua Layanan
+                    </Button>
+                </motion.div>
             </div>
         </section>
     );
 }
-
-const defaultCategories = [
-    { id: 1, name: 'Perawatan Rambut', description: 'Potong, styling, coloring, treatment rambut profesional', icon: Scissors },
-    { id: 2, name: 'Perawatan Wajah', description: 'Facial, treatment kulit, dan perawatan wajah lainnya', icon: Sparkles },
-    { id: 3, name: 'Perawatan Tubuh', description: 'Body spa, massage, dan perawatan tubuh lengkap', icon: Heart },
-];
 
 function PromotionsSection({ promotions, auth }) {
     // Generate URL for promo claim
@@ -206,18 +242,18 @@ function PromotionsSection({ promotions, auth }) {
                                 {/* Background Image */}
                                 {promo.image && (
                                     <div className="absolute inset-0">
-                                        <img 
-                                            src={promo.image} 
+                                        <img
+                                            src={promo.image}
                                             alt={promo.title}
                                             className="w-full h-full object-cover"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-r from-primary-600/60 to-primary-800/60" />
                                     </div>
                                 )}
-                                
+
                                 {/* Decorative Circle */}
                                 <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-                                
+
                                 {/* Content */}
                                 <div className="relative p-8">
                                     <span className="inline-block px-3 py-1 bg-gold-400 text-gray-900 rounded-full text-sm font-bold mb-4">
@@ -288,7 +324,7 @@ function WhyUsSection() {
 function CTASection({ auth }) {
     const isAdmin = auth?.user?.roles?.includes('Admin');
     const bookingUrl = !auth?.user ? '/login' : (isAdmin ? '/admin/bookings' : '/customer/bookings');
-    
+
     return (
         <section id="contact" className="py-24">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
