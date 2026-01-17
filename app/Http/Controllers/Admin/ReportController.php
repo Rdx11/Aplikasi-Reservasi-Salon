@@ -116,6 +116,8 @@ class ReportController extends Controller
             'data' => $data,
             'startDate' => $startDate,
             'endDate' => $endDate,
+            'printedBy' => auth()->user(),
+            'printedAt' => now(),
         ];
 
         $pdf = Pdf::loadView("reports.pdf.{$type}", $viewData);

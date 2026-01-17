@@ -13,80 +13,84 @@
         body {
             font-family: 'DejaVu Sans', sans-serif;
             font-size: 11px;
-            color: #1f2937;
+            color: #000000;
             line-height: 1.5;
         }
         .container {
-            padding: 30px;
+            padding: 20px 30px;
         }
-        /* Header */
-        .header {
+        /* Kop Surat */
+        .kop-surat {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #8b5cf6;
+            padding-bottom: 15px;
+            border-bottom: 3px double #000000;
+            margin-bottom: 20px;
         }
-        .header h1 {
-            font-size: 24px;
-            color: #7c3aed;
-            margin-bottom: 5px;
+        .kop-surat .company-name {
+            font-size: 20px;
+            font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
+            margin-bottom: 3px;
         }
-        .header .subtitle {
-            font-size: 14px;
-            color: #6b7280;
+        .kop-surat .company-tagline {
+            font-size: 12px;
+            font-style: italic;
+            margin-bottom: 5px;
         }
-        .header .company {
-            font-size: 18px;
+        .kop-surat .company-address {
+            font-size: 10px;
+            line-height: 1.4;
+        }
+        /* Header Laporan */
+        .report-header {
+            text-align: center;
+            margin-bottom: 20px;
+            margin-top: 15px;
+        }
+        .report-header h1 {
+            font-size: 16px;
             font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 10px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            margin-bottom: 5px;
+        }
+        .report-header .periode {
+            font-size: 11px;
         }
         /* Info Box */
         .info-box {
-            background: #f3f4f6;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            font-size: 11px;
         }
-        .info-row {
-            display: inline-block;
-            width: 48%;
-            margin-bottom: 5px;
+        .info-box table {
+            width: 100%;
         }
-        .info-label {
-            color: #6b7280;
-            font-size: 10px;
-            text-transform: uppercase;
+        .info-box td {
+            padding: 2px 0;
         }
-        .info-value {
-            font-weight: bold;
-            color: #1f2937;
+        .info-box .label {
+            width: 120px;
         }
         /* Customer Highlight */
         .customer-highlight {
-            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 12px;
+            border: 2px solid #000000;
+            padding: 15px;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .customer-highlight .amount {
-            font-size: 32px;
+            font-size: 24px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         .customer-highlight .label {
-            font-size: 12px;
-            opacity: 0.9;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
         /* Summary Cards */
         .summary {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .summary-table {
             width: 100%;
@@ -94,21 +98,18 @@
         }
         .summary-table td {
             width: 50%;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid #e2e8f0;
+            border: 1px solid #000000;
         }
         .summary-number {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
-            color: #7c3aed;
         }
         .summary-label {
-            font-size: 10px;
-            color: #64748b;
+            font-size: 9px;
             text-transform: uppercase;
-            margin-top: 5px;
+            margin-top: 3px;
         }
         /* Table */
         table.data-table {
@@ -117,35 +118,64 @@
             margin-top: 10px;
         }
         table.data-table thead th {
-            background: #7c3aed;
-            color: white;
-            padding: 12px 8px;
+            background: #f0f0f0;
+            color: #000000;
+            padding: 8px 5px;
             text-align: left;
             font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        table.data-table thead th:first-child {
-            border-radius: 8px 0 0 0;
-        }
-        table.data-table thead th:last-child {
-            border-radius: 0 8px 0 0;
+            border: 1px solid #000000;
         }
         table.data-table tbody td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 6px 5px;
+            border: 1px solid #000000;
+            font-size: 10px;
         }
         table.data-table tbody tr:nth-child(even) {
-            background: #f9fafb;
+            background: #f9f9f9;
+        }
+        /* Signature Section */
+        .signature-section {
+            margin-top: 40px;
+            width: 100%;
+        }
+        .signature-box {
+            float: right;
+            width: 200px;
+            text-align: center;
+        }
+        .signature-date {
+            margin-bottom: 5px;
+            font-size: 11px;
+        }
+        .signature-title {
+            margin-bottom: 60px;
+            font-size: 11px;
+        }
+        .signature-line {
+            border-bottom: 1px solid #000000;
+            margin-bottom: 5px;
+        }
+        .signature-name {
+            font-weight: bold;
+            font-size: 11px;
+            text-decoration: underline;
+        }
+        .signature-role {
+            font-size: 10px;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
         }
         /* Footer */
         .footer {
             margin-top: 30px;
-            padding-top: 15px;
-            border-top: 1px solid #e5e7eb;
+            padding-top: 10px;
+            border-top: 1px solid #000000;
             text-align: center;
             font-size: 9px;
-            color: #9ca3af;
         }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
@@ -154,13 +184,22 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="company">{{ config('app.name', 'Salon Booking') }}</div>
+        <!-- Kop Surat -->
+        <div class="kop-surat">
+            <div class="company-name">RASTA SALON</div>
+            <div class="company-tagline">"Tampil Mempesona & Percaya Diri"</div>
+            <div class="company-address">
+                Jl. Bugis, Kec. Sumbawa, Kabupaten Sumbawa, Nusa Tenggara Barat 84313<br>
+                Telp: +62 813 5342 2461 | Email: info@rastasalon.com
+            </div>
+        </div>
+
+        <!-- Header Laporan -->
+        <div class="report-header">
             <h1>Laporan Pelanggan</h1>
-            <div class="subtitle">
+            <div class="periode">
                 @if($startDate && $endDate)
-                    Periode: {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}
+                    Periode: {{ \Carbon\Carbon::parse($startDate)->format('d F Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d F Y') }}
                 @else
                     Semua Data
                 @endif
@@ -169,14 +208,16 @@
 
         <!-- Info Box -->
         <div class="info-box">
-            <div class="info-row">
-                <div class="info-label">Tanggal Cetak</div>
-                <div class="info-value">{{ now()->format('d F Y, H:i') }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Total Pelanggan</div>
-                <div class="info-value">{{ $data->count() }} Pelanggan</div>
-            </div>
+            <table>
+                <tr>
+                    <td class="label">Tanggal Cetak</td>
+                    <td>: {{ $printedAt->format('d F Y, H:i') }} WIB</td>
+                </tr>
+                <tr>
+                    <td class="label">Total Pelanggan</td>
+                    <td>: {{ $data->count() }} Pelanggan</td>
+                </tr>
+            </table>
         </div>
 
         <!-- Customer Highlight -->
@@ -223,7 +264,7 @@
             <tbody>
                 @forelse($data as $index => $customer)
                 <tr>
-                    <td>{{ $index + 1 }}</td>
+                    <td class="text-center">{{ $index + 1 }}</td>
                     <td class="font-bold">{{ $customer->name }}</td>
                     <td>{{ $customer->email }}</td>
                     <td>{{ $customer->phone ?? '-' }}</td>
@@ -237,10 +278,20 @@
             </tbody>
         </table>
 
+        <!-- Signature Section -->
+        <div class="signature-section clearfix">
+            <div class="signature-box">
+                <div class="signature-date">Sumbawa, {{ $printedAt->translatedFormat('d F Y') }}</div>
+                <div class="signature-title">Penanggung Jawab,</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">{{ $printedBy->name }}</div>
+                <div class="signature-role">{{ $printedBy->roles->first()->name ?? 'Administrator' }}</div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <div class="footer">
             <p>Dokumen ini digenerate secara otomatis oleh sistem {{ config('app.name') }}</p>
-            <p>© {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
         </div>
     </div>
 </body>

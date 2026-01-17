@@ -13,60 +13,71 @@
         body {
             font-family: 'DejaVu Sans', sans-serif;
             font-size: 11px;
-            color: #1f2937;
+            color: #000000;
             line-height: 1.5;
         }
         .container {
-            padding: 30px;
+            padding: 20px 30px;
         }
-        /* Header */
-        .header {
+        /* Kop Surat */
+        .kop-surat {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #6366f1;
+            padding-bottom: 15px;
+            border-bottom: 3px double #000000;
+            margin-bottom: 20px;
         }
-        .header h1 {
-            font-size: 24px;
-            color: #4f46e5;
+        .kop-surat .logo-area {
             margin-bottom: 5px;
+        }
+        .kop-surat .company-name {
+            font-size: 20px;
+            font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
+            margin-bottom: 3px;
         }
-        .header .subtitle {
-            font-size: 14px;
-            color: #6b7280;
+        .kop-surat .company-tagline {
+            font-size: 12px;
+            font-style: italic;
+            margin-bottom: 5px;
         }
-        .header .company {
-            font-size: 18px;
+        .kop-surat .company-address {
+            font-size: 10px;
+            line-height: 1.4;
+        }
+        /* Header Laporan */
+        .report-header {
+            text-align: center;
+            margin-bottom: 20px;
+            margin-top: 15px;
+        }
+        .report-header h1 {
+            font-size: 16px;
             font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 10px;
+            text-transform: uppercase;
+            text-decoration: underline;
+            margin-bottom: 5px;
+        }
+        .report-header .periode {
+            font-size: 11px;
         }
         /* Info Box */
         .info-box {
-            background: #f3f4f6;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            font-size: 11px;
         }
-        .info-row {
-            display: inline-block;
-            width: 48%;
-            margin-bottom: 5px;
+        .info-box table {
+            width: 100%;
         }
-        .info-label {
-            color: #6b7280;
-            font-size: 10px;
-            text-transform: uppercase;
+        .info-box td {
+            padding: 2px 0;
         }
-        .info-value {
-            font-weight: bold;
-            color: #1f2937;
+        .info-box .label {
+            width: 120px;
         }
         /* Summary Cards */
         .summary {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .summary-table {
             width: 100%;
@@ -74,21 +85,18 @@
         }
         .summary-table td {
             width: 25%;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid #e2e8f0;
+            border: 1px solid #000000;
         }
         .summary-number {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: bold;
-            color: #4f46e5;
         }
         .summary-label {
-            font-size: 10px;
-            color: #64748b;
+            font-size: 9px;
             text-transform: uppercase;
-            margin-top: 5px;
+            margin-top: 3px;
         }
         /* Table */
         table.data-table {
@@ -97,57 +105,71 @@
             margin-top: 10px;
         }
         table.data-table thead th {
-            background: #4f46e5;
-            color: white;
-            padding: 12px 8px;
+            background: #f0f0f0;
+            color: #000000;
+            padding: 8px 5px;
             text-align: left;
             font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        table.data-table thead th:first-child {
-            border-radius: 8px 0 0 0;
-        }
-        table.data-table thead th:last-child {
-            border-radius: 0 8px 0 0;
+            border: 1px solid #000000;
         }
         table.data-table tbody td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 6px 5px;
+            border: 1px solid #000000;
+            font-size: 10px;
         }
         table.data-table tbody tr:nth-child(even) {
-            background: #f9fafb;
-        }
-        table.data-table tbody tr:hover {
-            background: #f3f4f6;
+            background: #f9f9f9;
         }
         /* Status Badges */
         .status {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 9px;
+            padding: 2px 6px;
+            font-size: 8px;
             font-weight: bold;
             text-transform: uppercase;
-            display: inline-block;
         }
-        .status-pending { background: #fef3c7; color: #92400e; }
-        .status-confirmed { background: #dbeafe; color: #1e40af; }
-        .status-in_progress { background: #e0e7ff; color: #3730a3; }
-        .status-completed { background: #d1fae5; color: #065f46; }
-        .status-cancelled { background: #fee2e2; color: #991b1b; }
+        /* Signature Section */
+        .signature-section {
+            margin-top: 40px;
+            width: 100%;
+        }
+        .signature-box {
+            float: right;
+            width: 200px;
+            text-align: center;
+        }
+        .signature-date {
+            margin-bottom: 5px;
+            font-size: 11px;
+        }
+        .signature-title {
+            margin-bottom: 60px;
+            font-size: 11px;
+        }
+        .signature-line {
+            border-bottom: 1px solid #000000;
+            margin-bottom: 5px;
+        }
+        .signature-name {
+            font-weight: bold;
+            font-size: 11px;
+            text-decoration: underline;
+        }
+        .signature-role {
+            font-size: 10px;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
         /* Footer */
         .footer {
             margin-top: 30px;
-            padding-top: 15px;
-            border-top: 1px solid #e5e7eb;
+            padding-top: 10px;
+            border-top: 1px solid #000000;
             text-align: center;
             font-size: 9px;
-            color: #9ca3af;
-        }
-        .page-number {
-            text-align: right;
-            font-size: 9px;
-            color: #9ca3af;
         }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
@@ -156,13 +178,22 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="company">{{ config('app.name', 'Salon Booking') }}</div>
+        <!-- Kop Surat -->
+        <div class="kop-surat">
+            <div class="company-name">RASTA SALON</div>
+            <div class="company-tagline">"Tampil Mempesona & Percaya Diri"</div>
+            <div class="company-address">
+                Jl. Bugis, Kec. Sumbawa, Kabupaten Sumbawa, Nusa Tenggara Barat 84313<br>
+                Telp: +62 813 5342 2461 | Email: info@rastasalon.com
+            </div>
+        </div>
+
+        <!-- Header Laporan -->
+        <div class="report-header">
             <h1>Laporan Booking</h1>
-            <div class="subtitle">
+            <div class="periode">
                 @if($startDate && $endDate)
-                    Periode: {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}
+                    Periode: {{ \Carbon\Carbon::parse($startDate)->format('d F Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d F Y') }}
                 @else
                     Semua Data
                 @endif
@@ -171,14 +202,16 @@
 
         <!-- Info Box -->
         <div class="info-box">
-            <div class="info-row">
-                <div class="info-label">Tanggal Cetak</div>
-                <div class="info-value">{{ now()->format('d F Y, H:i') }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Total Data</div>
-                <div class="info-value">{{ $data->count() }} Booking</div>
-            </div>
+            <table>
+                <tr>
+                    <td class="label">Tanggal Cetak</td>
+                    <td>: {{ $printedAt->format('d F Y, H:i') }} WIB</td>
+                </tr>
+                <tr>
+                    <td class="label">Total Data</td>
+                    <td>: {{ $data->count() }} Booking</td>
+                </tr>
+            </table>
         </div>
 
         <!-- Summary -->
@@ -209,20 +242,20 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th style="width: 5%">No</th>
-                    <th style="width: 15%">Kode Booking</th>
-                    <th style="width: 18%">Pelanggan</th>
-                    <th style="width: 20%">Layanan</th>
+                    <th style="width: 4%">No</th>
+                    <th style="width: 14%">Kode Booking</th>
+                    <th style="width: 16%">Pelanggan</th>
+                    <th style="width: 18%">Layanan</th>
                     <th style="width: 12%">Tanggal</th>
-                    <th style="width: 10%">Waktu</th>
-                    <th style="width: 10%" class="text-right">Total</th>
-                    <th style="width: 10%" class="text-center">Status</th>
+                    <th style="width: 8%">Waktu</th>
+                    <th style="width: 14%" class="text-right">Total</th>
+                    <th style="width: 14%" class="text-center">Status</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($data as $index => $booking)
                 <tr>
-                    <td>{{ $index + 1 }}</td>
+                    <td class="text-center">{{ $index + 1 }}</td>
                     <td class="font-bold">{{ $booking->booking_code }}</td>
                     <td>{{ $booking->user->name ?? '-' }}</td>
                     <td>{{ $booking->service->name ?? '-' }}</td>
@@ -230,9 +263,7 @@
                     <td>{{ $booking->booking_time }}</td>
                     <td class="text-right">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</td>
                     <td class="text-center">
-                        <span class="status status-{{ $booking->status }}">
-                            {{ ucfirst(str_replace('_', ' ', $booking->status)) }}
-                        </span>
+                        <span class="status">{{ ucfirst(str_replace('_', ' ', $booking->status)) }}</span>
                     </td>
                 </tr>
                 @empty
@@ -243,10 +274,20 @@
             </tbody>
         </table>
 
+        <!-- Signature Section -->
+        <div class="signature-section clearfix">
+            <div class="signature-box">
+                <div class="signature-date">Sumbawa, {{ $printedAt->translatedFormat('d F Y') }}</div>
+                <div class="signature-title">Penanggung Jawab,</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">{{ $printedBy->name }}</div>
+                <div class="signature-role">{{ $printedBy->roles->first()->name ?? 'Administrator' }}</div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <div class="footer">
             <p>Dokumen ini digenerate secara otomatis oleh sistem {{ config('app.name') }}</p>
-            <p>© {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
         </div>
     </div>
 </body>
